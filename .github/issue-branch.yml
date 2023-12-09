@@ -1,0 +1,26 @@
+branchName: short
+autoCloseIssue: true
+branches:
+  - label: docs📝
+    prefix: docs/
+  - label: hotfix🚑
+    prefix: hotfix/
+  - label: refactor♻️
+    prefix: refactor/
+  - label: env🔧
+    prefix: chore/
+  - label: release👷
+    prefix: release/
+  - label: test✅
+    prefix: test/
+  - label: bug🐛
+    prefix: fix/
+  - label: question🏷️
+    skip: true
+  - label: '*'
+    prefix: feature/
+commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
+copyIssueLabelsToPR: true
+copyIssueAssigneeToPR: true
+copyIssueProjectsToPR: true
+copyIssueMilestoneToPR: true
