@@ -1,4 +1,4 @@
-package com.compono.ibackend.common.dto;
+package com.compono.ibackend.common.dto.error.response;
 
 import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
