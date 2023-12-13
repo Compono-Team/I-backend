@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 @Builder
 public class ErrorDTO {
 
-    private Integer code;
+    private int code;
     private String msg;
     private String detail;
 
