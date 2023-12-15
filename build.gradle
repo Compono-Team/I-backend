@@ -3,6 +3,8 @@ plugins {
 	id 'org.springframework.boot' version '3.2.0'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	id 'jacoco'
+	id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.compono'
@@ -45,11 +47,99 @@ dependencies {
 }
 
 tasks.named('test') {
-	outputs.dir snippetsDir
 	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
 }
 
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+def jacocoDir = layout.buildDirectory.dir("reports/")
+//queryDSL 제외
+def QDomains = []
+for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+	QDomains.add(qPattern + '*')
+}
+
+def jacocoExcludePatterns = [
+		// 테스트 커버리지 제외 파일
+		"**/*Application*",
+		"**/*Config*",
+		"**/*Exception*",
+		"**/*Request*",
+		"**/*Response*",
+		"**/*Dto*",
+		"**/*Interceptor*",
+		"**/*Filter*",
+		"**/*Resolver*",
+		"**/*Entity*",
+		"**/*Error*/**",
+		"**/test/**",
+		"**/resources/**",
+		"**/error/**",
+		"**/config/**"
+]
+
+sonar {
+	properties {
+		property "sonar.projectKey", "Compono-Team_I-backend"
+		property "sonar.organization", "compono-team"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property 'sonar.sources', 'src'
+		property 'sonar.language', 'java'
+		property 'sonar.sourceEncoding', 'UTF-8'
+		property 'sonar.test.exclusions', jacocoExcludePatterns.join(',')
+		property 'sonar.test.inclusions', '**/*Test.java'
+		property 'sonar.java.coveragePlugin', 'jacoco'
+		property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
+	}
+}
+
+jacoco {
+	toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		html.required.set(true)
+		xml.required.set(true)
+		csv.required.set(true)
+		html.destination jacocoDir.get().file("jacoco/index.html").asFile
+		xml.destination jacocoDir.get().file("jacoco/index.xml").asFile
+		csv.destination jacocoDir.get().file("jacoco/index.csv").asFile
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(
+				files(classDirectories.files.collect {
+					fileTree(dir: it, excludes: jacocoExcludePatterns + QDomains) // Querydsl 관련 제거
+				})
+		)
+	}
+	finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+
+	violationRules {
+		rule {
+			// rule 활성화
+			enabled = true
+
+			// 클래스 단위로 룰 체크
+			element = 'CLASS'
+
+			// 라인 커버리지를 최소 70% 만족
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70
+            }
+
+			excludes = jacocoExcludePatterns + QDomains
+		}
+	}
 }
