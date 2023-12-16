@@ -13,6 +13,7 @@ public enum ErrorCode {
     ENCRYPTION_FAILED(4003, "암호화에 실패하셨습니다."),
     DECRYPTION_FAILED(4004, "복호화에 실패하셨습니다."),
     CRYPTOGRAPHY_FAILED(4005, "암복호화에 실패하셨습니다."),
+    OPEN_API_REQUEST_FAIL(4006, "OPEN API 요청에 실패하였습니다"),
 
     // 401
     EXPIRED_TOKEN(4010, "만료된 토큰입니다.");

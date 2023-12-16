@@ -19,27 +19,30 @@ public class HTTPUtils {
      * @param className 요청 시, 응답을 받을 Class type
      * @return
      */
-    public static <T> ResponseEntity<T> get(String url, HttpHeaders header, Class<T> className) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity entity = new HttpEntity(header);
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url);
+    public static <T> ResponseEntity<T> get(UriComponentsBuilder url, HttpHeaders header, Class<T> className) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpEntity<?> entity = new HttpEntity<>(header);
 
-        ResponseEntity<T> response = restTemplate.exchange(uriBuilder.toUriString(),
-                HttpMethod.GET, entity, className
-        );
+            ResponseEntity<T> response = restTemplate.exchange(url.toUriString(),
+                    HttpMethod.GET, entity, className
+            );
 
-        if (response.getStatusCode() != HttpStatus.OK) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.OPEN_API_REQUEST_FAIL);
+            if (response.getStatusCode() != HttpStatus.OK) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.OPEN_API_REQUEST_FAIL);
+            }
+
+            return response;
+        } catch (Exception ex) {
+            throw new CustomException(ex);
         }
-
-        return response;
     }
 
     /**
      * POST 요청을 보내는 함수
      *
      * @param url       요청을 보낼 API path
-     * @param header
+     * @param headers
      * @param body
      * @param className 요청 시, 응답을 받을 Class type
      * @return
