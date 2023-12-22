@@ -58,11 +58,7 @@ tasks.named('asciidoctor') {
 }
 
 def jacocoDir = layout.buildDirectory.dir("reports/")
-//queryDSL 제외
-def QDomains = []
-for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
-    QDomains.add(qPattern + '*')
-}
+
 private excludedClassFilesForReport(classDirectories) {
     classDirectories.setFrom(
             files(classDirectories.files.collect {
@@ -78,31 +74,6 @@ private excludedClassFilesForReport(classDirectories) {
             })
     )
 }
-def jacocoExcludePatterns = [
-        // 테스트 커버리지 제외 파일
-        "**/*Application*",
-        "**/*Config*",
-        "**/*Exception*",
-        "**/*Request*",
-        "**/*Response*",
-        "**/*DTO*",
-        "**/*Interceptor*",
-        "**/*Filter*",
-        "**/*Resolver*",
-        "**/*Entity*",
-        "**/*Error*/**",
-        "**/test/**",
-        "**/dto/**",
-        "**/resources/**",
-        "**/error/**",
-        "**/config/**",
-        "com/compono/ibackend/common/dto/error/response/ErrorDTO**",
-        "com/compono/ibackend/common/exception/CustomException**",
-        "com/compono/ibackend/common/enumType/ErrorCode**",
-        "com/compono/ibackend/IbackendApplication**",
-        "com/compono/ibackend/develop/controller/DevelopController**",
-        "com/compono/ibackend/common/handler/CustomExceptionHandler**"
-]
 
 sonar {
     properties {
@@ -112,7 +83,8 @@ sonar {
         property 'sonar.sources', 'src'
         property 'sonar.language', 'java'
         property 'sonar.sourceEncoding', 'UTF-8'
-        property 'sonar.test.exclusions', classDirectories.join(',')
+        property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/** ,**/*Application*.java , **/*Config*.java,' +
+                '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java'
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.java.coveragePlugin', 'jacoco'
         property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
