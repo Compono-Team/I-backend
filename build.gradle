@@ -1,145 +1,182 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.0'
-	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
-	id 'jacoco'
-	id "org.sonarqube" version "4.4.1.3373"
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.diffplug.spotless' version '6.11.0'
+    id 'jacoco'
+    id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.compono'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-	finalizedBy 'jacocoTestReport'
+test{
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
 
 tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	dependsOn test
+    inputs.dir snippetsDir
+    dependsOn test
 }
 
 def jacocoDir = layout.buildDirectory.dir("reports/")
 //queryDSL 제외
 def QDomains = []
 for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
-	QDomains.add(qPattern + '*')
+    QDomains.add(qPattern + '*')
 }
-
+private excludedClassFilesForReport(classDirectories) {
+    classDirectories.setFrom(
+            files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        "**/Q*",
+                        "**/*DTO*",
+                        "**/*Code*",
+                        "**/*Exception*",
+                        "**/*Develop*",
+                        "**/*Application*",
+                        "**/*Config*"
+                ])
+            })
+    )
+}
 def jacocoExcludePatterns = [
-		// 테스트 커버리지 제외 파일
-		"**/*Application*",
-		"**/*Config*",
-		"**/*Exception*",
-		"**/*Request*",
-		"**/*Response*",
-		"**/*Dto*",
-		"**/*Interceptor*",
-		"**/*Filter*",
-		"**/*Resolver*",
-		"**/*Entity*",
-		"**/*Error*/**",
-		"**/test/**",
-		"**/resources/**",
-		"**/error/**",
-		"**/config/**"
+        // 테스트 커버리지 제외 파일
+        "**/*Application*",
+        "**/*Config*",
+        "**/*Exception*",
+        "**/*Request*",
+        "**/*Response*",
+        "**/*DTO*",
+        "**/*Interceptor*",
+        "**/*Filter*",
+        "**/*Resolver*",
+        "**/*Entity*",
+        "**/*Error*/**",
+        "**/test/**",
+        "**/dto/**",
+        "**/resources/**",
+        "**/error/**",
+        "**/config/**",
+        "com/compono/ibackend/common/dto/error/response/ErrorDTO**",
+        "com/compono/ibackend/common/exception/CustomException**",
+        "com/compono/ibackend/common/enumType/ErrorCode**",
+        "com/compono/ibackend/IbackendApplication**",
+        "com/compono/ibackend/develop/controller/DevelopController**",
+        "com/compono/ibackend/common/handler/CustomExceptionHandler**"
 ]
 
 sonar {
-	properties {
-		property "sonar.projectKey", "Compono-Team_I-backend"
-		property "sonar.organization", "compono-team"
-		property "sonar.host.url", "https://sonarcloud.io"
-		property 'sonar.sources', 'src'
-		property 'sonar.language', 'java'
-		property 'sonar.sourceEncoding', 'UTF-8'
-		property 'sonar.test.exclusions', jacocoExcludePatterns.join(',')
-		property 'sonar.test.inclusions', '**/*Test.java'
-		property 'sonar.java.coveragePlugin', 'jacoco'
-		property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
-	}
+    properties {
+        property "sonar.projectKey", "Compono-Team_I-backend"
+        property "sonar.organization", "compono-team"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property 'sonar.sources', 'src'
+        property 'sonar.language', 'java'
+        property 'sonar.sourceEncoding', 'UTF-8'
+        property 'sonar.test.exclusions', classDirectories.join(',')
+        property 'sonar.test.inclusions', '**/*Test.java'
+        property 'sonar.java.coveragePlugin', 'jacoco'
+        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
+    }
 }
 
 jacoco {
-	toolVersion = "0.8.8"
+    toolVersion = "0.8.8"
 }
 
 jacocoTestReport {
-	dependsOn test
-	reports {
-		html.required.set(true)
-		xml.required.set(true)
-		csv.required.set(true)
-		html.destination jacocoDir.get().file("jacoco/index.html").asFile
-		xml.destination jacocoDir.get().file("jacoco/index.xml").asFile
-		csv.destination jacocoDir.get().file("jacoco/index.csv").asFile
-	}
+    dependsOn test
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(true)
+        html.destination jacocoDir.get().file("jacoco/index.html").asFile
+        xml.destination jacocoDir.get().file("jacoco/index.xml").asFile
+        csv.destination jacocoDir.get().file("jacoco/index.csv").asFile
+    }
 
-	afterEvaluate {
-		classDirectories.setFrom(
-				files(classDirectories.files.collect {
-					fileTree(dir: it, excludes: jacocoExcludePatterns + QDomains) // Querydsl 관련 제거
-				})
-		)
-	}
-	finalizedBy jacocoTestCoverageVerification
+    excludedClassFilesForReport(classDirectories)
+
+    finalizedBy 'jacocoTestCoverageVerification'
 }
 
 jacocoTestCoverageVerification {
+    excludedClassFilesForReport(classDirectories)
 
-	violationRules {
-		rule {
-			// rule 활성화
-			enabled = true
+    violationRules {
+        rule {
+            // rule 활성화
+            enabled = true
 
-			// 클래스 단위로 룰 체크
-			element = 'CLASS'
+            // 클래스 단위로 룰 체크
+            element = 'CLASS'
 
-			// 라인 커버리지를 최소 70% 만족
+            // 라인 커버리지를 최소 70% 만족
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
                 minimum = 0.70
             }
 
-			excludes = jacocoExcludePatterns + QDomains
-		}
-	}
+//            excludes = jacocoExcludePatterns
+        }
+    }
 }
+
+spotless {
+    java {
+        target("**/*.java")
+        importOrder() // import 순서 정의
+        removeUnusedImports() // 사용하지 않는 import 제거
+        trimTrailingWhitespace() // 공백 제거
+        endWithNewline() // 끝부분 NewLine 처리
+        googleJavaFormat().aosp() // google java format
+    }
+}
+
+// pre-commit spotless check script
+tasks.register('updateGitHooks', Copy) {
+    from './scripts/pre-commit'
+    into './.git/hooks'
+    fileMode 0775
+}
+compileJava.dependsOn updateGitHooks

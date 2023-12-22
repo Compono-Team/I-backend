@@ -1,7 +1,7 @@
 name: Create Issue Branch
 on:
   issues:
-    types: [assigned]
+    types: [ assigned ]
 
 jobs:
   create_issue_branch_job:
