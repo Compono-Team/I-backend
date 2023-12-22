@@ -11,11 +11,7 @@ public record ErrorDTO(int code, String msg) {
     public static ResponseEntity<ErrorDTO> toResponseEntity(CustomException ex) {
         ErrorCode errorType = ex.getErrorCode();
 
-        return ResponseEntity
-                .status(ex.getStatus())
-                .body(ErrorDTO.builder()
-                        .code(errorType.getCode())
-                        .msg(errorType.getMsg())
-                        .build());
+        return ResponseEntity.status(ex.getStatus())
+                .body(ErrorDTO.builder().code(errorType.getCode()).msg(errorType.getMsg()).build());
     }
 }
