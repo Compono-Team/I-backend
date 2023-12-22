@@ -1,6 +1,7 @@
 package com.compono.ibackend.user.domain;
 
 import com.compono.ibackend.user.enumType.OauthProvider;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,14 +18,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OauthProvider oauthProvider;
 
     private String oauthProviderUniqueKey;
 
+    @Column(nullable = false)
     private Boolean isAuthenticated;
 }
