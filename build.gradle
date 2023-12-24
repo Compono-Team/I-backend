@@ -1,15 +1,18 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.0'
-	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.diffplug.spotless' version '6.11.0'
+    id 'jacoco'
+    id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.compono'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 configurations {
@@ -20,11 +23,11 @@ configurations {
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
@@ -34,30 +37,31 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
 
-	// google api
-	implementation 'com.google.apis:google-api-services-calendar:v3-rev20231123-2.0.0'
-	implementation 'com.google.api-client:google-api-client:1.31.3'
-
-	// XSS
-	implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1'
-	implementation 'com.navercorp.lucy:lucy-xss:1.6.3'
+    // google api
+    implementation 'com.google.apis:google-api-services-calendar:v3-rev20231123-2.0.0'
+    implementation 'com.google.api-client:google-api-client:1.31.3'
 }
 
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
 }
 
 def jacocoDir = layout.buildDirectory.dir("reports/")
@@ -79,7 +83,8 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/*Response*",
                         "**/escapes/**",
                         "**/converter/**",
-                        "**/enumType/**"
+                        "**/enumType/**",
+                        "**/*GoogleCalendar*"
                 ])
             })
     )
@@ -94,7 +99,7 @@ sonar {
         property 'sonar.language', 'java'
         property 'sonar.sourceEncoding', 'UTF-8'
         property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**, **/domain/** ,**/*Application*.java , **/*Config*.java,' +
-                '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java, **/escapes/**, **/converter/**, **/enumType/**'
+                '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java, **/escapes/**, **/converter/**, **/enumType/**,**/*GoogleCalendar'
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.java.coveragePlugin', 'jacoco'
         property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
@@ -121,43 +126,26 @@ jacocoTestReport {
     finalizedBy 'jacocoTestCoverageVerification'
 }
 
-//jacocoTestCoverageVerification {
-//    excludedClassFilesForReport(classDirectories)
-//
-//    violationRules {
-//        rule {
-//            // rule 활성화
-//            enabled = true
-//
-//            // 클래스 단위로 룰 체크
-//            element = 'CLASS'
-//
-//            // 라인 커버리지를 최소 70% 만족
-//            limit {
-//                counter = 'LINE'
-//                value = 'COVEREDRATIO'
-//                minimum = 0.70
-//            }
-//
-////            excludes = jacocoExcludePatterns
-//        }
-//    }
-//}
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    configurations 'asciidoctorExt'
-    sources {
-        include("**/index.adoc")
-    }
-    baseDirFollowsSourceFile()
-    dependsOn test
-}
+jacocoTestCoverageVerification {
+    excludedClassFilesForReport(classDirectories)
 
-bootJar {
-    dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into "src/main/resources/static/docs"   // src/main/resources/static/docs로 복사
+    violationRules {
+        rule {
+            // rule 활성화
+            enabled = true
+
+            // 클래스 단위로 룰 체크
+            element = 'CLASS'
+
+            // 라인 커버리지를 최소 70% 만족
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70
+            }
+
+//            excludes = jacocoExcludePatterns
+        }
     }
 }
 
@@ -169,15 +157,6 @@ spotless {
         trimTrailingWhitespace() // 공백 제거
         endWithNewline() // 끝부분 NewLine 처리
         googleJavaFormat().aosp() // google java format
-    }
-}
-
-
-task copyGitSubmodule(type: Copy) {
-    copy {
-        from './config'
-        include '*.yml'
-        into './src/main/resources'
     }
 }
 
