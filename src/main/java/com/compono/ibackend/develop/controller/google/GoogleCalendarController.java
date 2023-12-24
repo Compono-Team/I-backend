@@ -1,7 +1,6 @@
 package com.compono.ibackend.develop.controller.google;
 
-import com.compono.ibackend.common.exception.CustomException;
-import com.compono.ibackend.develop.service.Google.GoogleCalendarService;
+import com.compono.ibackend.develop.service.google.GoogleCalendarService;
 import com.google.api.services.calendar.model.Events;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,12 +18,8 @@ public class GoogleCalendarController {
 
     @GetMapping("v1/holiday")
     public ResponseEntity<Object> getHoliday() {
-        try {
-            Events events = googleCalendarService.findHolidayFromGoogleCalendar();
+        Events events = googleCalendarService.findHolidayFromGoogleCalendar();
 
-            return new ResponseEntity<>(events, HttpStatus.OK);
-        } catch (Exception ex) {
-            throw new CustomException(ex);
-        }
+        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 }
