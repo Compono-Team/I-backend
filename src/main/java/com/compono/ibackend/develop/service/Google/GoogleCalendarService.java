@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GoogleCalendarService {
 
     @Value("${spring.api-key.google.google-calendar-api.key}")
-    private String GOOGLE_CALENDAR_API_KEY;
+    private String googleCalendarApiKey;
 
     private static final String GOOGLE_KOREA_HOLIDAY_CALENDAR_ID =
             "en.south_korea#holiday@group.v.calendar.google.com";
@@ -37,8 +37,7 @@ public class GoogleCalendarService {
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
         return new Calendar.Builder(httpTransport, JSON_FACTORY, null)
-                .setCalendarRequestInitializer(
-                        new CalendarRequestInitializer(GOOGLE_CALENDAR_API_KEY))
+                .setCalendarRequestInitializer(new CalendarRequestInitializer(googleCalendarApiKey))
                 .build();
     }
 

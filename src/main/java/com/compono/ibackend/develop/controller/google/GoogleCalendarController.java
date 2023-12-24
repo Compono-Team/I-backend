@@ -1,4 +1,4 @@
-package com.compono.ibackend.develop.controller.Google;
+package com.compono.ibackend.develop.controller.google;
 
 import com.compono.ibackend.common.exception.CustomException;
 import com.compono.ibackend.develop.service.Google.GoogleCalendarService;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("api/develop/")
 public class GoogleCalendarController {
+
     private final GoogleCalendarService googleCalendarService;
 
     @GetMapping("v1/holiday")
