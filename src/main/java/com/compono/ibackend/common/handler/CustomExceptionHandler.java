@@ -15,8 +15,10 @@ public class CustomExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorDTO> handleCustom400Exception(CustomException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        log.warn(String.format("http-status={%d} code={%d} msg={%s}", ex.getStatus().value(), errorCode.getCode(),
-                errorCode.getMsg()));
+        log.warn(
+                String.format(
+                        "http-status={%d} code={%d} msg={%s}",
+                        ex.getStatus().value(), errorCode.getCode(), errorCode.getMsg()));
 
         return ErrorDTO.toResponseEntity(ex);
     }

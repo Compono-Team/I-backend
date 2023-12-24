@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/develop/")
+@RequestMapping("api/develop/v1")
 public class DevelopController {
 
-    @GetMapping("v1/bad-request")
+    @GetMapping("/bad-request")
     public ResponseEntity<Object> test400Error() {
         try {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_PASSWORD);
@@ -23,7 +23,7 @@ public class DevelopController {
         }
     }
 
-    @GetMapping("v1/unauthorized")
+    @GetMapping("/unauthorized")
     public ResponseEntity<Object> test401Error() {
         try {
             throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.EXPIRED_TOKEN);

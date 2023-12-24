@@ -3,6 +3,9 @@ plugins {
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.diffplug.spotless' version '6.11.0'
+    id 'jacoco'
+    id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.compono'
@@ -48,12 +51,108 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:1.31.3'
 }
 
-tasks.named('test') {
-    outputs.dir snippetsDir
+test {
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
 
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
 }
+
+def jacocoDir = layout.buildDirectory.dir("reports/")
+
+private excludedClassFilesForReport(classDirectories) {
+    classDirectories.setFrom(
+            files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        "**/Q*",
+                        "**/*DTO*",
+                        "**/*Code*",
+                        "**/*Exception*",
+                        "**/*Develop*",
+                        "**/*Application*",
+                        "**/*Config*"
+                ])
+            })
+    )
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "Compono-Team_I-backend"
+        property "sonar.organization", "compono-team"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property 'sonar.sources', 'src'
+        property 'sonar.language', 'java'
+        property 'sonar.sourceEncoding', 'UTF-8'
+        property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/** ,**/*Application*.java , **/*Config*.java,' +
+                '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java'
+        property 'sonar.test.inclusions', '**/*Test.java'
+        property 'sonar.java.coveragePlugin', 'jacoco'
+        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        csv.required.set(true)
+        html.destination jacocoDir.get().file("jacoco/index.html").asFile
+        xml.destination jacocoDir.get().file("jacoco/index.xml").asFile
+        csv.destination jacocoDir.get().file("jacoco/index.csv").asFile
+    }
+
+    excludedClassFilesForReport(classDirectories)
+
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    excludedClassFilesForReport(classDirectories)
+
+    violationRules {
+        rule {
+            // rule 활성화
+            enabled = true
+
+            // 클래스 단위로 룰 체크
+            element = 'CLASS'
+
+            // 라인 커버리지를 최소 70% 만족
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70
+            }
+
+//            excludes = jacocoExcludePatterns
+        }
+    }
+}
+
+spotless {
+    java {
+        target("**/*.java")
+        importOrder() // import 순서 정의
+        removeUnusedImports() // 사용하지 않는 import 제거
+        trimTrailingWhitespace() // 공백 제거
+        endWithNewline() // 끝부분 NewLine 처리
+        googleJavaFormat().aosp() // google java format
+    }
+}
+
+// pre-commit spotless check script
+tasks.register('updateGitHooks', Copy) {
+    from './scripts/pre-commit'
+    into './.git/hooks'
+    fileMode 0775
+}
+compileJava.dependsOn updateGitHooks

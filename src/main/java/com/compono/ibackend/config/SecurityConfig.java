@@ -13,22 +13,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    private static final String[] DEFAULT_WHITELIST = {
-            "/status", "/images/**", "/error/**"
-    };
+    private static final String[] DEFAULT_WHITELIST = {"/status", "/images/**", "/error/**"};
 
     private static final String[] DEVELOP_TEST_PATH = {
-            "api/develop/**",
+        "api/develop/**",
     };
 
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request
-                .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                .requestMatchers(DEFAULT_WHITELIST).permitAll()
-                .requestMatchers(DEVELOP_TEST_PATH).permitAll()
-                .anyRequest().authenticated()
-        );
+        http.authorizeHttpRequests(
+                request ->
+                        request.dispatcherTypeMatchers(DispatcherType.FORWARD)
+                                .permitAll()
+                                .requestMatchers(DEFAULT_WHITELIST)
+                                .permitAll()
+                                .requestMatchers(DEVELOP_TEST_PATH)
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated());
         return http.build();
     }
 }
