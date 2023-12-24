@@ -14,17 +14,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class GoogleCalendarService {
+
     @Value("${spring.api-key.google.google-calendar-api.key}")
-    private String GOOGLE_CALENDAR_API_KEY;
+    private String googleCalendarApiKey;
 
-    private final static String GOOGLE_KOREA_HOLIDAY_CALENDAR_ID = "en.south_korea#holiday@group.v.calendar.google.com";
-    private final static JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-
+    private static final String GOOGLE_KOREA_HOLIDAY_CALENDAR_ID =
+            "en.south_korea#holiday@group.v.calendar.google.com";
+    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
     /**
      * Google calendar API를 사용하기 위한 Calendar 서비스를 생성해서 반환하는 함수
@@ -37,7 +37,7 @@ public class GoogleCalendarService {
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
         return new Calendar.Builder(httpTransport, JSON_FACTORY, null)
-                .setCalendarRequestInitializer(new CalendarRequestInitializer(GOOGLE_CALENDAR_API_KEY))
+                .setCalendarRequestInitializer(new CalendarRequestInitializer(googleCalendarApiKey))
                 .build();
     }
 
