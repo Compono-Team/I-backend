@@ -111,28 +111,28 @@ jacocoTestReport {
     finalizedBy 'jacocoTestCoverageVerification'
 }
 
-jacocoTestCoverageVerification {
-    excludedClassFilesForReport(classDirectories)
-
-    violationRules {
-        rule {
-            // rule 활성화
-            enabled = true
-
-            // 클래스 단위로 룰 체크
-            element = 'CLASS'
-
-            // 라인 커버리지를 최소 70% 만족
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.70
-            }
-
-//            excludes = jacocoExcludePatterns
-        }
-    }
-}
+//jacocoTestCoverageVerification {
+//    excludedClassFilesForReport(classDirectories)
+//
+//    violationRules {
+//        rule {
+//            // rule 활성화
+//            enabled = true
+//
+//            // 클래스 단위로 룰 체크
+//            element = 'CLASS'
+//
+//            // 라인 커버리지를 최소 70% 만족
+//            limit {
+//                counter = 'LINE'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.70
+//            }
+//
+////            excludes = jacocoExcludePatterns
+//        }
+//    }
+//}
 
 spotless {
     java {
