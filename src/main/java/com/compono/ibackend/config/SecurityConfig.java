@@ -15,9 +15,7 @@ public class SecurityConfig {
 
     private static final String[] DEFAULT_WHITELIST = {"/status", "/images/**", "/error/**"};
 
-    private static final String[] DEVELOP_TEST_PATH = {
-        "api/develop/**",
-    };
+    private static final String[] DEVELOP_TEST_PATH = {"api/develop/**", "/api/develop/**"};
 
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
