@@ -4,7 +4,7 @@ import com.compono.ibackend.reservation.domain.PreReservation;
 import java.time.LocalDateTime;
 
 public record PreReservationResponse(
-        Long Id,
+        Long id,
         String email,
         String name,
         String phoneNumber,

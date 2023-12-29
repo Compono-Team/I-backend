@@ -11,12 +11,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @WebMvcTest(HealthCheckController.class)
 public class HealthCheckControllerTest {
 
-    @Autowired private MockMvc mockMvc;
+    private final MockMvc mvc;
+
+    HealthCheckControllerTest(@Autowired MockMvc mvc) {
+        this.mvc = mvc;
+    }
 
     @Test
     @WithMockUser
     public void healthCheckTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/develop/v1/health"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/develop/v1/health"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("OK"));
     }
