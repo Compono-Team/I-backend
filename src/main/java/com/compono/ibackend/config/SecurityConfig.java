@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String[] DEFAULT_WHITELIST = {
-            "/status", "/images/**", "/error/**"
+            "/status", "/images/**", "/error/**", "/api/v1/oauth/**"
     };
 
     private static final String[] DEVELOP_TEST_PATH = {
@@ -23,6 +24,8 @@ public class SecurityConfig {
 
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);
+
         http.authorizeHttpRequests(request -> request
                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                 .requestMatchers(DEFAULT_WHITELIST).permitAll()
