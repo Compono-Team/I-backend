@@ -16,7 +16,6 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -35,3 +34,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+src/main/resources/static/docs/index.html
+

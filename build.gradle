@@ -50,6 +50,7 @@ dependencies {
 }
 
 test{
+    outputs.dir snippetsDir
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
 }
@@ -134,7 +135,6 @@ jacocoTestReport {
 //        }
 //    }
 //}
-
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
@@ -147,8 +147,9 @@ tasks.named('asciidoctor') {
 
 bootJar {
     dependsOn asciidoctor
-    from("${asciidoctor.outputDir}") {
-        into 'static/docs'
+    copy {
+        from "${asciidoctor.outputDir}"
+        into "src/main/resources/static/docs"   // src/main/resources/static/docs로 복사
     }
 }
 
