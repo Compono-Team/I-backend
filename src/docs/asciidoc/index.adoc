@@ -11,12 +11,13 @@ endif::[]
 
 = Common
 
-== 공통 API 응답 포맷
-
-== 응답 상태 코드 및 메세지
+== 커스텀 에러
 
 
-= API
+= 사전예약
 
-== Post API
+== 사전예약 생성
 include::api/prereservation/create-prereservation.adoc[]
+
+== 사전예약 조회
+include::api/prereservation/get-prereservation.adoc[]
