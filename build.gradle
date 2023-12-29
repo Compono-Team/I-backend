@@ -13,6 +13,10 @@ java {
 }
 
 configurations {
+    asciidoctorExt
+}
+
+configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -43,6 +47,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
 }
@@ -54,5 +59,6 @@ tasks.named('test') {
 
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
     dependsOn test
 }
