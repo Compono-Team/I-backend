@@ -20,7 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("비즈니스 로직 - 사전예약")
+@DisplayName("[비즈니스 로직] - 사전예약")
 @ExtendWith(MockitoExtension.class)
 class PreReservationServiceTest {
 

@@ -37,7 +37,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@DisplayName("컨드롤러 - 사전예약")
+@DisplayName("[컨드롤러] - 사전예약")
 @WebMvcTest(PreReservationController.class)
 @AutoConfigureRestDocs
 class PreReservationControllerTest {
@@ -50,6 +50,7 @@ class PreReservationControllerTest {
         this.mvc = mvc;
     }
 
+    @DisplayName("{POST} 사전예약 등록 - 정상호출")
     @Test
     @WithMockUser(
             username = "ADMIN",
@@ -116,6 +117,7 @@ class PreReservationControllerTest {
         return PreReservation.of("compono@test.com", "compono", "010-1234-1234", "바라는 점은..");
     }
 
+    @DisplayName("{GET} 사전예약 단건조회 - 정상호출")
     @Test
     @WithMockUser(
             username = "ADMIN",
