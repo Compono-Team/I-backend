@@ -16,4 +16,9 @@ public record PreReservationRequest(
     public PreReservation toEntity() {
         return PreReservation.of(email, name, phoneNumber, expectation);
     }
+
+    public static PreReservationRequest of(
+            String email, String name, String phoneNumber, String expectation) {
+        return new PreReservationRequest(email, name, phoneNumber, expectation);
+    }
 }
