@@ -1,0 +1,15 @@
+=== 사전예약 등록 API
+
+==== 1. Curl Request
+include::{snippets}/create-preReservation/curl-request.adoc[]
+
+==== 2. HTTP Request
+include::{snippets}/create-preReservation/http-request.adoc[]
+
+==== 3. HTTP Request Body
+include::{snippets}/create-preReservation/request-body.adoc[]
+include::{snippets}/create-preReservation/request-fields.adoc[]
+
+==== 4. HTTP Response Body
+include::{snippets}/create-preReservation/response-body.adoc[]
+include::{snippets}/create-preReservation/response-fields.adoc[]
