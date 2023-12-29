@@ -16,6 +16,7 @@ java {
 }
 
 configurations {
+    asciidoctorExt
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -44,17 +45,13 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
 test{
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
-}
-
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
 }
 
 def jacocoDir = layout.buildDirectory.dir("reports/")
@@ -64,12 +61,16 @@ private excludedClassFilesForReport(classDirectories) {
             files(classDirectories.files.collect {
                 fileTree(dir: it, exclude: [
                         "**/Q*",
+                        "**/domain/**",
                         "**/*DTO*",
                         "**/*Code*",
                         "**/*Exception*",
                         "**/*Develop*",
                         "**/*Application*",
-                        "**/*Config*"
+                        "**/*Config*",
+                        "**/*Dto*",
+                        "**/*Request*",
+                        "**/*Response*",
                 ])
             })
     )
@@ -83,7 +84,7 @@ sonar {
         property 'sonar.sources', 'src'
         property 'sonar.language', 'java'
         property 'sonar.sourceEncoding', 'UTF-8'
-        property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/** ,**/*Application*.java , **/*Config*.java,' +
+        property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**, **/domain/** ,**/*Application*.java , **/*Config*.java,' +
                 '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java'
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.java.coveragePlugin', 'jacoco'
@@ -133,6 +134,23 @@ jacocoTestReport {
 //        }
 //    }
 //}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    sources{
+        include("**/index.adoc")
+    }
+    baseDirFollowsSourceFile()
+    dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
+}
 
 spotless {
     java {

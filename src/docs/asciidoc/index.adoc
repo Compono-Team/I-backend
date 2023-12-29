@@ -1,0 +1,22 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= API 명세서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+= Common
+
+== 공통 API 응답 포맷
+
+== 응답 상태 코드 및 메세지
+
+
+= API
+
+== Post API
+include::api/prereservation/create-prereservation.adoc[]
