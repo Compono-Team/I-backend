@@ -10,9 +10,18 @@ public record PreReservationResponse(
         String phoneNumber,
         String expectation,
         LocalDateTime createdAt) {
+    public static PreReservationResponse of(
+            Long id,
+            String email,
+            String name,
+            String phoneNumber,
+            String expectation,
+            LocalDateTime createdAt) {
+        return new PreReservationResponse(id, email, name, phoneNumber, expectation, createdAt);
+    }
 
-    public PreReservationResponse(PreReservation preReservation) {
-        this(
+    public static PreReservationResponse from(PreReservation preReservation) {
+        return PreReservationResponse.of(
                 preReservation.getId(),
                 preReservation.getEmail(),
                 preReservation.getName(),
