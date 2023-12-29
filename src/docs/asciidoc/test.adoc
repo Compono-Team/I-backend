@@ -1,0 +1,3 @@
+== UserController
+
+operation::users[snippets="http-request,http-response"]
