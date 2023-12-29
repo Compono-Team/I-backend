@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(HealthCheckController.class)
-public class HealthCheckControllerTest {
+class HealthCheckControllerTest {
 
     private final MockMvc mvc;
 
@@ -19,7 +19,7 @@ public class HealthCheckControllerTest {
 
     @Test
     @WithMockUser
-    public void healthCheckTest() throws Exception {
+    void healthCheckTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/api/develop/v1/health"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("OK"));
