@@ -69,7 +69,8 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/*Exception*",
                         "**/*Develop*",
                         "**/*Application*",
-                        "**/*Config*"
+                        "**/*Config*",
+                        "**/converter/**",
                 ])
             })
     )
