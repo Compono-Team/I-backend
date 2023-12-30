@@ -59,6 +59,11 @@ tasks.named('asciidoctor') {
     dependsOn test
 }
 
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
 def jacocoDir = layout.buildDirectory.dir("reports/")
 
 private excludedClassFilesForReport(classDirectories) {
