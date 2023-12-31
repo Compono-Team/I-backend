@@ -49,6 +49,7 @@ class PhoneValidatorTest {
                 arguments("012-1234-5678", null),
                 arguments("01012345678", null),
                 arguments("010-12345-678", null),
+                arguments("010-0245-6178", null),
                 arguments("", null),
                 arguments(null, null));
     }
