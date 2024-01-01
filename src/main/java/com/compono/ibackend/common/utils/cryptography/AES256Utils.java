@@ -1,5 +1,7 @@
 package com.compono.ibackend.common.utils.cryptography;
 
+import com.compono.ibackend.common.enumType.ErrorCode;
+import com.compono.ibackend.common.exception.CustomException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -11,6 +13,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -51,14 +54,18 @@ public class AES256Utils {
      * @return
      */
     private static Cipher getCipher(int decryptMode)
-            throws NoSuchPaddingException, NoSuchAlgorithmException,
-                    InvalidAlgorithmParameterException, InvalidKeyException {
+            throws InvalidAlgorithmParameterException, InvalidKeyException {
         String encodedIV = getEncodedIV();
-        Cipher cipher = Cipher.getInstance(TRANSFORMATION_AES_KEY);
-        IvParameterSpec ivSpec = new IvParameterSpec(DECODER_BASE64.decode(encodedIV));
 
-        cipher.init(decryptMode, getAESKeySpec(), ivSpec);
-        return cipher;
+        try {
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION_AES_KEY);
+            IvParameterSpec ivSpec = new IvParameterSpec(DECODER_BASE64.decode(encodedIV));
+
+            cipher.init(decryptMode, getAESKeySpec(), ivSpec);
+            return cipher;
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.CRYPTOGRAPHY_FAILED);
+        }
     }
 
     private static SecretKeySpec getAESKeySpec() {
