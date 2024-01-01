@@ -78,7 +78,7 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/*Request*",
                         "**/*Response*",
                         "**/converter/**",
-                        "**/*Escapes*"
+                        "**/escapes/**",
                 ])
             })
     )
