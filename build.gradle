@@ -147,23 +147,6 @@ jacocoTestReport {
 //        }
 //    }
 //}
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    configurations 'asciidoctorExt'
-    sources{
-        include("**/index.adoc")
-    }
-    baseDirFollowsSourceFile()
-    dependsOn test
-}
-
-bootJar {
-    dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into "src/main/resources/static/docs"   // src/main/resources/static/docs로 복사
-    }
-}
 
 spotless {
     java {
