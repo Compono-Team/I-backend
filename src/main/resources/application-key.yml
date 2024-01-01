@@ -1,0 +1,4 @@
+spring:
+  cryptography:
+    aes:
+      secret-key: ${AES_SECRET_KEY}
