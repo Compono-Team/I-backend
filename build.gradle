@@ -54,14 +54,10 @@ dependencies {
     implementation 'com.navercorp.lucy:lucy-xss:1.6.3'
 }
 
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-tasks.named('asciidoctor') {
-    inputs.dir snippetsDir
-    dependsOn test
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
 
 def jacocoDir = layout.buildDirectory.dir("reports/")
@@ -82,7 +78,7 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/*Request*",
                         "**/*Response*",
                         "**/escapes/**",
-                        "**/converter/**",
+                        "**/converter/**"
                 ])
             })
     )
