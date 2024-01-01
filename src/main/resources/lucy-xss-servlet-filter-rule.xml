@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.navercorp.com/lucy-xss-servlet">
+  <default>
+    <defender>xssPreventerDefender</defender>
+  </default>
+
+  <!-- default defender 선언, 별다른 defender 선언이 없으면 default defender를 사용해 필터링 한다. -->
+  <defenders>
+    <!-- XssPreventer 등록 -->
+    <defender>
+      <class>com.navercorp.lucy.security.xss.servletfilter.defender.XssPreventerDefender</class>
+      <name>xssPreventerDefender</name>
+    </defender>
+
+    <!-- XssSaxFilter 등록 -->
+    <defender>
+      <class>com.navercorp.lucy.security.xss.servletfilter.defender.XssSaxFilterDefender</class>
+      <init-param>
+        <param-value>lucy-xss-sax.xml</param-value>
+        <param-value>false</param-value>
+      </init-param>
+      <name>xssSaxFilterDefender</name>
+    </defender>
+
+    <!-- XssFilter 등록 -->
+    <defender>
+      <class>com.navercorp.lucy.security.xss.servletfilter.defender.XssFilterDefender</class>
+      <init-param>
+        <param-value>lucy-xss.xml</param-value>
+        <param-value>false</param-value>
+      </init-param>
+      <name>xssFilterDefender</name>
+    </defender>
+  </defenders>
+
+  <!-- global 필터링 룰 선언 -->
+  <global>
+    <params>
+      <param name="globalParameter" useDefender="false"/>
+      <param name="globalPrefixParameter" useDefender="false" usePrefix="true"/>
+    </params>
+  </global>
+
+  <!-- url 별 필터링 룰 선언 -->
+  <url-rule-set>
+    
+    <url-rule>
+      <url disable="true">/disableUrl1.do</url>
+    </url-rule>
+
+    <url-rule>
+      <params>
+        <param name="url1Parameter" useDefender="false"/>
+        <param name="url1PrefixParameter" useDefender="false" usePrefix="true"/>
+      </params>
+      <url>/url1.do</url>
+    </url-rule>
+
+    <url-rule>
+      <params>
+        <param name="url2Parameter1" useDefender="false"/>
+        <param name="url2Parameter2">
+          <defender>xssSaxFilterDefender</defender>
+        </param>
+      </params>
+      <url>/url2.do</url>
+    </url-rule>
+  </url-rule-set>
+</config>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config extends="lucy-xss-default-sax.xml"
+  xmlns="http://www.nhncorp.com/lucy-xss">
+
+  <attributeRule>
+    <attribute base64Decoding="true" name="data">
+      <notAllowedPattern><![CDATA[(?i:s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
+      <notAllowedPattern><![CDATA[(?i:d\\*a\\*t\\*a\\*:)]]></notAllowedPattern>
+      <notAllowedPattern><![CDATA[&[#\\%x]+[\da-fA-F][\da-fA-F]+]]></notAllowedPattern>
+    </attribute>
+    <attribute base64Decoding="true" name="src">
+      <notAllowedPattern><![CDATA[(?i:s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
+      <notAllowedPattern><![CDATA[(?i:d\\*a\\*t\\*a\\*:)]]></notAllowedPattern>
+      <notAllowedPattern><![CDATA[&[#\\%x]+[\da-fA-F][\da-fA-F]+]]></notAllowedPattern>
+    </attribute>
+    <attribute name="style">
+      <notAllowedPattern>
+        <![CDATA[(?i:j\\*a\\*v\\*a\\*s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
+      <notAllowedPattern><![CDATA[(?i:e\\*x\\*p\\*r\\*e\\*s\\*s\\*i\\*o\\*n)]]></notAllowedPattern>
+      <notAllowedPattern><![CDATA[&[#\\%x]+[\da-fA-F][\da-fA-F]+]]></notAllowedPattern>
+    </attribute>
+    <attribute name="href">
+      <notAllowedPattern>
+        <![CDATA[(?i:j\\*a\\*v\\*a\\*s\\*c\\*r\\*i\\*p\\*t\\*:)]]></notAllowedPattern>
+    </attribute>
+  </attributeRule>
+
+  <elementRule>
+    <element disable="true"
+      name="body"/> <!-- <BODY ONLOAD=alert("XSS")>, <BODY BACKGROUND="javascript:alert('XSS')"> -->
+    <element disable="true" name="embed"/>
+    <element disable="true" name="iframe"/> <!-- <IFRAME SRC=”http://hacker-site.com/xss.html”> -->
+    <element disable="true" name="meta"/>
+    <element disable="true" name="object"/>
+    <element disable="true" name="script"/> <!-- <SCRIPT> alert(“XSS”); </SCRIPT> -->
+    <element disable="true" name="style"/>
+    <element disable="true" name="link"/>
+    <element disable="true" name="base"/>
+  </elementRule>
+
+</config>
