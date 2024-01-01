@@ -1,4 +1,4 @@
 spring:
   cryptography:
     aes:
-      secret-key: ${secrets.AES_SECRET_KEY}
+      secret-key: ${{ secrets.AES_SECRET_KEY }}
