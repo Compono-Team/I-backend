@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
 
                 // todo : 프론트 엔드 url 추가
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://localhost:3000", "https://www.axyz.today")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }
