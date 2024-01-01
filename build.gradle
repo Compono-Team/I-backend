@@ -77,7 +77,7 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/*Dto*",
                         "**/*Request*",
                         "**/*Response*",
-                        "**/*Escapes*",
+                        "**/escapes/**",
                 ])
             })
     )
@@ -92,7 +92,7 @@ sonar {
         property 'sonar.language', 'java'
         property 'sonar.sourceEncoding', 'UTF-8'
         property 'sonar.exclusions', '**/test/**, **/Q*.java, **/*Doc*.java, **/resources/**, **/domain/** ,**/*Application*.java , **/*Config*.java,' +
-                '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java', "**/*Escapes*.java"
+                '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java, **/escapes/**'
         property 'sonar.test.inclusions', '**/*Test.java'
         property 'sonar.java.coveragePlugin', 'jacoco'
         property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
