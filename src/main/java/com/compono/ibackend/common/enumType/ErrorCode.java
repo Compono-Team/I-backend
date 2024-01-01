@@ -12,6 +12,7 @@ public enum ErrorCode {
     NOT_FOUND_PRE_RESERVATION_ID(4002, "요청한 사전예약 정보가 존재하지 않습니다."),
     ENCRYPTION_FAILED(4003, "암호화에 실패하셨습니다."),
     DECRYPTION_FAILED(4004, "복호화에 실패하셨습니다."),
+    CRYPTOGRAPHY_FAILED(4005, "암복호화에 실패하셨습니다."),
 
     // 401
     EXPIRED_TOKEN(4010, "만료된 토큰입니다.");
