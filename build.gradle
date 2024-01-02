@@ -171,6 +171,15 @@ spotless {
     }
 }
 
+
+task copyGitSubmodule(type: Copy) {
+    copy {
+        from './config'
+        include '*.yml'
+        into './src/main/resources'
+    }
+}
+
 // pre-commit spotless check script
 tasks.register('updateGitHooks', Copy) {
     from './scripts/pre-commit'
