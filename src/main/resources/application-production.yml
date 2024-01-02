@@ -1,0 +1,7 @@
+spring:
+  config:
+    activate:
+      on-profile: "production"
+  jpa:
+    hibernate:
+      ddl-auto: none
