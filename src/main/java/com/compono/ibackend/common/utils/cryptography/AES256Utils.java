@@ -54,7 +54,7 @@ public class AES256Utils {
      * @return
      */
     private static Cipher getCipher(int decryptMode)
-        throws InvalidAlgorithmParameterException, InvalidKeyException {
+            throws InvalidAlgorithmParameterException, InvalidKeyException {
         String encodedIV = getEncodedIV();
 
         try {
