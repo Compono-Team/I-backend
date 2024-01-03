@@ -2,9 +2,11 @@ package com.compono.ibackend.user.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.compono.ibackend.common.converter.AES256ToStringConverter;
 import com.compono.ibackend.user.enumType.OauthProvider;
 import com.compono.ibackend.user.enumType.UserStatus;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,6 +26,7 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @Convert(converter = AES256ToStringConverter.class)
     @Column(name = "email", nullable = false, length = 255)
     private String email;
 
@@ -34,6 +37,7 @@ public class User {
     @Column(name = "oauth_provider", nullable = false)
     private OauthProvider oauthProvider;
 
+    @Convert(converter = AES256ToStringConverter.class)
     @Column(name = "oauth_provider_unique_key")
     private String oauthProviderUniqueKey;
 
