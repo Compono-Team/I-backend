@@ -51,6 +51,10 @@ dependencies {
     // google api
     implementation 'com.google.apis:google-api-services-calendar:v3-rev20231123-2.0.0'
     implementation 'com.google.api-client:google-api-client:1.31.3'
+
+    // XSS
+    implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1'
+    implementation 'com.navercorp.lucy:lucy-xss:1.6.3'
 }
 
 test {
