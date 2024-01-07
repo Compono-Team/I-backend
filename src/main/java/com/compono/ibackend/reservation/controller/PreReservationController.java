@@ -1,5 +1,7 @@
 package com.compono.ibackend.reservation.controller;
 
+import com.compono.ibackend.common.dto.page.request.PageRequest;
+import com.compono.ibackend.common.dto.page.request.PageResponse;
 import com.compono.ibackend.reservation.dto.request.PreReservationRequest;
 import com.compono.ibackend.reservation.dto.response.PreReservationResponse;
 import com.compono.ibackend.reservation.service.PreReservationService;
@@ -30,5 +32,11 @@ public class PreReservationController {
     public ResponseEntity<PreReservationResponse> getPreReservation(
             @PathVariable(name = "preReservationId") Long preReservationId) {
         return ResponseEntity.ok().body(preReservationService.findPreReservation(preReservationId));
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<PreReservationResponse>> getPreReservationWithPaging(
+            PageRequest pageRequest) {
+        return ResponseEntity.ok().body(preReservationService.findAll(pageRequest));
     }
 }

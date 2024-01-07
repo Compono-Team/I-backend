@@ -13,15 +13,20 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.compono.ibackend.common.dto.page.request.PageRequest;
+import com.compono.ibackend.common.dto.page.request.PageResponse;
 import com.compono.ibackend.reservation.domain.PreReservation;
 import com.compono.ibackend.reservation.dto.request.PreReservationRequest;
 import com.compono.ibackend.reservation.dto.response.PreReservationResponse;
 import com.compono.ibackend.reservation.service.PreReservationService;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +34,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -155,5 +165,80 @@ class PreReservationControllerTest {
                                         fieldWithPath("createdAt")
                                                 .type(STRING)
                                                 .description("사전예약 등록일"))));
+    }
+
+    @DisplayName("{GET} 사전예약 페이지 조회 - 정상호출")
+    @Test
+    @WithMockUser(
+            username = "ADMIN",
+            roles = {"SUPER"})
+    void getAll() throws Exception {
+        int page = 0;
+        int size = 10;
+        String criteria = "createdAt";
+
+        List<PreReservationResponse> content =
+                Collections.singletonList(createPreReservationResponse());
+        Page<PreReservationResponse> responsePage =
+                new PageImpl<>(
+                        content,
+                        org.springframework.data.domain.PageRequest.of(
+                                page, size, Sort.by(Direction.DESC, criteria)),
+                        content.size());
+
+        given(preReservationService.findAll(PageRequest.of(page, size, criteria)))
+                .willReturn(PageResponse.convertToPageResponse(responsePage));
+
+        mvc.perform(
+                        RestDocumentationRequestBuilders.get("/api/v1/pre-reservation")
+                                .param("page", String.valueOf(page))
+                                .param("size", String.valueOf(size))
+                                .param("criteria", criteria)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(
+                        document(
+                                "get-page-preReservations",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                queryParameters(
+                                        RequestDocumentation.parameterWithName("page")
+                                                .description("페이지 번호 default(0)"),
+                                        RequestDocumentation.parameterWithName("size")
+                                                .description("페이지 크기 default(10)"),
+                                        RequestDocumentation.parameterWithName("criteria")
+                                                .description("정렬 기준 default(createdAt)")),
+                                responseFields(
+                                        fieldWithPath("content[].id")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("사전예약 ID"),
+                                        fieldWithPath("content[].email")
+                                                .type(STRING)
+                                                .description("이메일"),
+                                        fieldWithPath("content[].name")
+                                                .type(STRING)
+                                                .description("이름"),
+                                        fieldWithPath("content[].phoneNumber")
+                                                .type(STRING)
+                                                .description("전화번호"),
+                                        fieldWithPath("content[].expectation")
+                                                .type(STRING)
+                                                .description("바라는 점"),
+                                        fieldWithPath("content[].createdAt")
+                                                .type(STRING)
+                                                .description("사전예약 등록일"),
+                                        fieldWithPath("pageNumber")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("페이지 수"),
+                                        fieldWithPath("pageSize")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("페이지 사이즈"),
+                                        fieldWithPath("totalPages")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("총 페이지 수"),
+                                        fieldWithPath("totalElements")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("총 요소 수"))));
     }
 }

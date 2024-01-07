@@ -6,11 +6,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import com.compono.ibackend.common.dto.page.request.PageRequest;
+import com.compono.ibackend.common.dto.page.request.PageResponse;
 import com.compono.ibackend.common.exception.BadRequestException;
 import com.compono.ibackend.reservation.domain.PreReservation;
 import com.compono.ibackend.reservation.dto.request.PreReservationRequest;
 import com.compono.ibackend.reservation.dto.response.PreReservationResponse;
 import com.compono.ibackend.reservation.repository.PreReservationRepository;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +22,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 @DisplayName("[비즈니스 로직] - 사전예약")
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +64,6 @@ class PreReservationServiceTest {
         PreReservationRequest preReservationRequest = createPreReservationRequest();
         PreReservation preReservation = createPreReservation();
 
-        Long preReservationId = 0L;
         given(preReservationRepository.findByEmail(preReservationRequest.email()))
                 .willReturn(Optional.of(preReservation));
 
@@ -108,6 +115,40 @@ class PreReservationServiceTest {
         // Then
         assertThat(t).isInstanceOf(BadRequestException.class).hasMessage("요청한 사전예약 정보가 존재하지 않습니다.");
         then(preReservationRepository).should().findById(preReservationId);
+    }
+
+    @DisplayName("사전예약 페이지 조회를 정상적으로 반환한다.")
+    @Test
+    void givenPageRequest_whenFindAllWithPage_thenPagingPreReservations() {
+        // Given
+        int page = 0;
+        int size = 10;
+        String criteria = "createdAt";
+        PageRequest pageRequest = PageRequest.of(page, size, criteria);
+        List<PreReservation> content = Collections.singletonList(createPreReservation());
+        Page<PreReservation> responsePage =
+                new PageImpl<>(
+                        content,
+                        org.springframework.data.domain.PageRequest.of(
+                                page, size, Sort.by(Direction.DESC, criteria)),
+                        content.size());
+        given(preReservationRepository.findAll(pageRequest.getPageRequest()))
+                .willReturn(responsePage);
+
+        // When
+        PageResponse<PreReservationResponse> preReservationResponses =
+                preReservationService.findAll(pageRequest);
+
+        // Then
+        assertThat(preReservationResponses)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("content", preReservationResponses.getContent())
+                .hasFieldOrPropertyWithValue("pageNumber", preReservationResponses.getPageNumber())
+                .hasFieldOrPropertyWithValue("pageSize", preReservationResponses.getPageSize())
+                .hasFieldOrPropertyWithValue(
+                        "totalElements", preReservationResponses.getTotalElements())
+                .hasFieldOrPropertyWithValue("totalPages", preReservationResponses.getTotalPages());
+        then(preReservationRepository).should().findAll(pageRequest.getPageRequest());
     }
 
     private PreReservation createPreReservation() {
