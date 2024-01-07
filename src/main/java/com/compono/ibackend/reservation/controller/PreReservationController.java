@@ -1,8 +1,8 @@
-package com.compono.ibackend.reservation.presentation;
+package com.compono.ibackend.reservation.controller;
 
-import com.compono.ibackend.reservation.application.PreReservationService;
 import com.compono.ibackend.reservation.dto.request.PreReservationRequest;
 import com.compono.ibackend.reservation.dto.response.PreReservationResponse;
+import com.compono.ibackend.reservation.service.PreReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

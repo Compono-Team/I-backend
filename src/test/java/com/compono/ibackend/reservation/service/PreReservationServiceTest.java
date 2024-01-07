@@ -1,17 +1,16 @@
-package com.compono.ibackend.reservation.application;
+package com.compono.ibackend.reservation.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 import com.compono.ibackend.common.exception.BadRequestException;
 import com.compono.ibackend.reservation.domain.PreReservation;
-import com.compono.ibackend.reservation.domain.repository.PreReservationRepository;
 import com.compono.ibackend.reservation.dto.request.PreReservationRequest;
 import com.compono.ibackend.reservation.dto.response.PreReservationResponse;
+import com.compono.ibackend.reservation.repository.PreReservationRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
