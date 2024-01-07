@@ -1,6 +1,5 @@
-package com.compono.ibackend.reservation.presentation;
+package com.compono.ibackend.reservation.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -18,12 +17,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.compono.ibackend.reservation.application.PreReservationService;
 import com.compono.ibackend.reservation.domain.PreReservation;
 import com.compono.ibackend.reservation.dto.request.PreReservationRequest;
 import com.compono.ibackend.reservation.dto.response.PreReservationResponse;
+import com.compono.ibackend.reservation.service.PreReservationService;
 import java.time.LocalDateTime;
-import javax.print.DocFlavor.STRING;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
