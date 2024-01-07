@@ -49,6 +49,27 @@ class PreReservationServiceTest {
         then(preReservationRepository).should().save(any(PreReservation.class));
     }
 
+    @DisplayName("사전예약 등록 시, 중복된 이메일이 존재하면 에외를 던진다.")
+    @Test
+    void givenDuplicatedEmail_whenAddPreReservation_thenThrowsBadRequestException() {
+        // Given
+        PreReservationRequest preReservationRequest = createPreReservationRequest();
+        PreReservation preReservation = createPreReservation();
+
+        Long preReservationId = 0L;
+        given(preReservationRepository.findByEmail(preReservationRequest.email()))
+                .willReturn(Optional.of(preReservation));
+
+        // When
+        Throwable t =
+                catchThrowable(
+                        () -> preReservationService.addPreReservation(preReservationRequest));
+
+        // Then
+        assertThat(t).isInstanceOf(BadRequestException.class).hasMessage("이미 데이터가 존재합니다.");
+        then(preReservationRepository).should().findByEmail(preReservationRequest.email());
+    }
+
     @DisplayName("사전예약 단건 조회를 정상적으로 반환한다.")
     @Test
     void givenPreReservationId_whenFindPreReservationWithId_thenPreReservationResponse() {
