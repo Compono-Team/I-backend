@@ -1,5 +1,6 @@
 package com.compono.ibackend.reservation.service;
 
+import static com.compono.ibackend.common.enumType.ErrorCode.DUPLICATED_FAILED;
 import static com.compono.ibackend.common.enumType.ErrorCode.NOT_FOUND_PRE_RESERVATION_ID;
 
 import com.compono.ibackend.common.exception.BadRequestException;
@@ -8,6 +9,8 @@ import com.compono.ibackend.reservation.dto.request.PreReservationRequest;
 import com.compono.ibackend.reservation.dto.response.PreReservationResponse;
 import com.compono.ibackend.reservation.repository.PreReservationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,9 @@ public class PreReservationService {
     private final PreReservationRepository preReservationRepository;
     // 저장하기
     public PreReservationResponse addPreReservation(PreReservationRequest preReservationRequest) {
+        if (preReservationRepository.findByEmail(preReservationRequest.email()).isPresent()) {
+            throw new BadRequestException(DUPLICATED_FAILED);
+        }
         return PreReservationResponse.from(
                 (preReservationRepository.save(preReservationRequest.toEntity())));
     }
@@ -30,5 +36,10 @@ public class PreReservationService {
                         .findById(id)
                         .orElseThrow(() -> new BadRequestException(NOT_FOUND_PRE_RESERVATION_ID));
         return PreReservationResponse.from(preReservation);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PreReservationResponse> findAll(Pageable pageable) {
+        return preReservationRepository.findAll(pageable).map(PreReservationResponse::from);
     }
 }
