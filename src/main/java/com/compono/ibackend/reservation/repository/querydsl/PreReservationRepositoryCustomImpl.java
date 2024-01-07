@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 public class PreReservationRepositoryCustomImpl extends QuerydslRepositorySupport
         implements PreReservationRepositoryCustom {
 
-    public PreReservationRepositoryCustomImpl(Class<?> domainClass) {
+    public PreReservationRepositoryCustomImpl() {
         super(PreReservation.class);
     }
 }
