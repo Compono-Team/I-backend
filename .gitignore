@@ -41,3 +41,6 @@ src/main/resources/static/docs/index.html
 ### Git Submodule
 src/main/resources/application-key.yml
 src/main/resources/application-datasource.yml
+
+### Querydsl
+/src/main/generated
