@@ -1,0 +1,23 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= API 명세서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+= Common
+
+== 커스텀 에러
+
+
+= 사전예약
+
+== 사전예약 생성
+include::api/prereservation/create-prereservation.adoc[]
+
+== 사전예약 조회
+include::api/prereservation/get-prereservation.adoc[]

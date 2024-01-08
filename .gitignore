@@ -16,7 +16,6 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -35,3 +34,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### spring restDocs
+src/main/resources/static/docs/index.html
+
+### Git Submodule
+src/main/resources/application-key.yml
+src/main/resources/application-datasource.yml
