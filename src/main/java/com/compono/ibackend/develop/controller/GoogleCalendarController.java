@@ -1,4 +1,4 @@
-package com.compono.ibackend.develop.controller.google;
+package com.compono.ibackend.develop.controller;
 
 import com.compono.ibackend.develop.service.google.GoogleCalendarService;
 import com.google.api.services.calendar.model.Events;
