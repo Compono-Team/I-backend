@@ -14,14 +14,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(
         classes = {JwtProvider.class},
         properties = {
-            "spring.jwt.secret=sdjkjskjdkjskdjkswdnlkqwnlfkdnlkqwnfkqwnf",
-            "spring.jwt.issuer=compono",
-            "spring.jwtaccess-token-expiration-minute=30",
-            "spring.jwt.refresh-token-expiration-minute=7200"
+                "spring.jwt.secret=sdjkjskjdkjskdjkswdnlkqwnlfkdnlkqwnfkqwnf",
+                "spring.jwt.issuer=compono",
+                "spring.jwt.access-token-expiration-minute=30",
+                "spring.jwt.refresh-token-expiration-minute=7200"
         })
 class JwtProviderTest {
 
-    @Autowired private JwtProvider jwtProvider;
+    @Autowired
+    private JwtProvider jwtProvider;
 
     @Test
     void createAccessToken() {
