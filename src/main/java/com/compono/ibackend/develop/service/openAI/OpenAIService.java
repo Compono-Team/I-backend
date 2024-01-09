@@ -7,6 +7,8 @@ import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatPropertyRequest
 import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatRequest;
 import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatToolInfoRequest;
 import com.compono.ibackend.develop.dto.openAi.request.OpenAiChatFunctionRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +36,7 @@ public class OpenAIService {
     public HttpHeaders getOpenAiHeader() {
         HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth("Bearer " + openAiApiKey);
+        headers.setBearerAuth(openAiApiKey);
 
         return headers;
     }
@@ -44,7 +46,8 @@ public class OpenAIService {
         HttpHeaders headers = getOpenAiHeader();
 
         // 2. Request body 구성
-        OpenAIChatMsgRequest openAIChatMsgRequest = new OpenAIChatMsgRequest("user", question);
+        List<OpenAIChatMsgRequest> messages = new ArrayList<>();
+        messages.add(OpenAIChatMsgRequest.of("user", question));
         OpenAIChatPropertyRequest propertyRequest = OpenAIChatPropertyRequest.builder().build();
         OpenAIChatParameterRequest parameterRequest =
                 OpenAIChatParameterRequest.builder()
@@ -63,15 +66,26 @@ public class OpenAIService {
                         .function(functionRequest)
                         .build();
         OpenAIChatRequest openAIChatRequest =
-                OpenAIChatRequest.builder()
-                        .model(OPEN_AI_MODEL_NAME)
-                        .message(openAIChatMsgRequest)
-                        .tools(toolInfoRequest)
-                        .toolChoice("auto")
-                        .build();
+                OpenAIChatRequest.of(OPEN_AI_MODEL_NAME, messages, toolInfoRequest, "auto");
 
         ResponseEntity<Map> reseponse =
                 HTTPUtils.post(OPEN_AI_CHAT_API_URL, headers, openAIChatRequest, Map.class);
+        return reseponse.getBody();
+    }
+
+    public Object getChatSimpleResponse(String question) {
+        // 1. 헤더 구성
+        HttpHeaders headers = getOpenAiHeader();
+
+        // 2. 바디 구성
+        List<OpenAIChatMsgRequest> messages = new ArrayList<>();
+        messages.add(OpenAIChatMsgRequest.of("user", question));
+        OpenAIChatRequest openAIChatRequest =
+                OpenAIChatRequest.of(OPEN_AI_MODEL_NAME, messages, false);
+
+        ResponseEntity<Map> reseponse =
+                HTTPUtils.post(OPEN_AI_CHAT_API_URL, headers, openAIChatRequest, Map.class);
+
         return reseponse.getBody();
     }
 }

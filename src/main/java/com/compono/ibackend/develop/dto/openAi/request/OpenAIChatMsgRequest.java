@@ -1,16 +1,8 @@
 package com.compono.ibackend.develop.dto.openAi.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+public record OpenAIChatMsgRequest(String role, String content) {
 
-@Data
-@Builder
-@Getter
-@AllArgsConstructor
-public class OpenAIChatMsgRequest {
-
-    private String role;
-    private String content;
+    public static OpenAIChatMsgRequest of(String role, String content) {
+        return new OpenAIChatMsgRequest(role, content);
+    }
 }

@@ -1,21 +1,25 @@
 package com.compono.ibackend.develop.dto.openAi.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import java.util.List;
 
-@Data
-@Builder
-@Getter
-@AllArgsConstructor
-public class OpenAIChatRequest {
+public record OpenAIChatRequest(
+        String model,
+        List<OpenAIChatMsgRequest> messages,
+        OpenAIChatToolInfoRequest tools,
+        Boolean stream,
+        @JsonProperty("tool_choice") String toolChoice) {
 
-    private String model;
-    private OpenAIChatMsgRequest message;
-    private OpenAIChatToolInfoRequest tools;
+    public static OpenAIChatRequest of(
+            String model, List<OpenAIChatMsgRequest> messages, boolean stream) {
+        return new OpenAIChatRequest(model, messages, null, stream, null);
+    }
 
-    @JsonProperty("tool_choice")
-    private String toolChoice;
+    public static OpenAIChatRequest of(
+            String model,
+            List<OpenAIChatMsgRequest> messages,
+            OpenAIChatToolInfoRequest tools,
+            String toolChoice) {
+        return new OpenAIChatRequest(model, messages, tools, null, toolChoice);
+    }
 }

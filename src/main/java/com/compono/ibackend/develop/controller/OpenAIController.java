@@ -20,4 +20,11 @@ public class OpenAIController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("v1/chat")
+    public ResponseEntity<Object> getOpenAILinkTest() {
+        Object response = openAIService.getChatSimpleResponse("올해 정보처리기능사 시험을 일정을 알려줘");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
