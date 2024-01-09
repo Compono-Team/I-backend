@@ -2,12 +2,7 @@ package com.compono.ibackend.develop.service.openAI;
 
 import com.compono.ibackend.common.utils.HTTPUtils;
 import com.compono.ibackend.develop.aop.annotation.TimeTrace;
-import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatMsgRequest;
-import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatParameterRequest;
-import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatPropertyRequest;
-import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatRequest;
-import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatToolInfoRequest;
-import com.compono.ibackend.develop.dto.openAi.request.OpenAiChatFunctionRequest;
+import com.compono.ibackend.develop.dto.openAi.request.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,11 +45,36 @@ public class OpenAIService {
         // 2. Request body 구성
         List<OpenAIChatMsgRequest> messages = new ArrayList<>();
         messages.add(OpenAIChatMsgRequest.of("user", question));
-        OpenAIChatPropertyRequest propertyRequest = OpenAIChatPropertyRequest.builder().build();
+
+        List<String> requiredParameter = new ArrayList<>();
+        requiredParameter.add("date");
+        requiredParameter.add("address");
+
+        List<OpenAIChatToolInfoRequest> tools = new ArrayList<>();
+
+        // "string number integer object array boolean null"
+        OpenAIChatPropertyRequest propertyRequest =
+                OpenAIChatPropertyRequest.builder()
+                        .address(
+                                OpenAIChatPropertyDetailRequest.of(
+                                        "string",
+                                        "the address of the place where the event is taking place"))
+                        .date(
+                                OpenAIChatPropertyDetailRequest.of(
+                                        "string",
+                                        "Date of progress of an event in timestamp format"))
+                        .scheduleByRound(
+                                OpenAIChatPropertyDetailRequest.of(
+                                        "string", "Information by episode of the event"))
+                        .detail(
+                                OpenAIChatPropertyDetailRequest.of(
+                                        "string", "details of the event"))
+                        .build();
         OpenAIChatParameterRequest parameterRequest =
                 OpenAIChatParameterRequest.builder()
                         .type("object")
                         .properties(propertyRequest)
+                        .required(requiredParameter)
                         .build();
         OpenAiChatFunctionRequest functionRequest =
                 OpenAiChatFunctionRequest.builder()
@@ -67,12 +87,16 @@ public class OpenAIService {
                         .type("function")
                         .function(functionRequest)
                         .build();
+
+        tools.add(toolInfoRequest);
+
         OpenAIChatRequest openAIChatRequest =
-                OpenAIChatRequest.of(OPEN_AI_MODEL_NAME, messages, toolInfoRequest, "auto");
+                OpenAIChatRequest.of(OPEN_AI_MODEL_NAME, messages, tools, "auto");
 
         ResponseEntity<Map> reseponse =
                 HTTPUtils.post(OPEN_AI_CHAT_API_URL, headers, openAIChatRequest, Map.class);
-        return reseponse.getBody();
+
+        return reseponse.getBody().get("choices");
     }
 
     @TimeTrace

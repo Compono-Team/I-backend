@@ -6,7 +6,7 @@ import java.util.List;
 public record OpenAIChatRequest(
         String model,
         List<OpenAIChatMsgRequest> messages,
-        OpenAIChatToolInfoRequest tools,
+        List<OpenAIChatToolInfoRequest> tools,
         Boolean stream,
         @JsonProperty("tool_choice") String toolChoice) {
 
@@ -18,7 +18,7 @@ public record OpenAIChatRequest(
     public static OpenAIChatRequest of(
             String model,
             List<OpenAIChatMsgRequest> messages,
-            OpenAIChatToolInfoRequest tools,
+            List<OpenAIChatToolInfoRequest> tools,
             String toolChoice) {
         return new OpenAIChatRequest(model, messages, tools, null, toolChoice);
     }
