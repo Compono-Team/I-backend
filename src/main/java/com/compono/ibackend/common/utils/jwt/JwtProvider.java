@@ -15,16 +15,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret}")
+    @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.issuer}")
+    @Value("${spring.jwt.issuer}")
     private String issuer;
 
-    @Value("${jwt.access-token-expiration-minute}")
+    @Value("${spring.jwt.access-token-expiration-minute}")
     private long accessTokenExpirationMinute;
 
-    @Value("${jwt.refresh-token-expiration-minute}")
+    @Value("${spring.jwt.refresh-token-expiration-minute}")
     private long refreshTokenExpirationMinute;
 
     // Claim : JWT 에 넣을 내용(eg body, 부가적으로 사용할 정보를 넣을 수 있음)

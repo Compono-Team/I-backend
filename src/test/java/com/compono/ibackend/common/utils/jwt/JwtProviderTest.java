@@ -11,17 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @DisplayName("JWT 발급, 파싱 테스트")
-@SpringBootTest(classes = {JwtProvider.class},
+@SpringBootTest(
+        classes = {JwtProvider.class},
         properties = {
-                "jwt.secret=sdjkjskjdkjskdjkswdnlkqwnlfkdnlkqwnfkqwnf",
-                "jwt.issuer=compono",
-                "jwt.access-token-expiration-minute=30",
-                "jwt.refresh-token-expiration-minute=7200"}
-)
+            "spring.jwt.secret=sdjkjskjdkjskdjkswdnlkqwnlfkdnlkqwnfkqwnf",
+            "spring.jwt.issuer=compono",
+            "spring.jwtaccess-token-expiration-minute=30",
+            "spring.jwt.refresh-token-expiration-minute=7200"
+        })
 class JwtProviderTest {
 
-    @Autowired
-    private JwtProvider jwtProvider;
+    @Autowired private JwtProvider jwtProvider;
 
     @Test
     void createAccessToken() {
