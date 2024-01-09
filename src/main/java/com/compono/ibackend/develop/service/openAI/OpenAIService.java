@@ -1,6 +1,7 @@
 package com.compono.ibackend.develop.service.openAI;
 
 import com.compono.ibackend.common.utils.HTTPUtils;
+import com.compono.ibackend.develop.aop.annotation.TimeTrace;
 import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatMsgRequest;
 import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatParameterRequest;
 import com.compono.ibackend.develop.dto.openAi.request.OpenAIChatPropertyRequest;
@@ -41,6 +42,7 @@ public class OpenAIService {
         return headers;
     }
 
+    @TimeTrace
     public Object getChatResponse(String question) {
         // 1. 헤더 구성
         HttpHeaders headers = getOpenAiHeader();
@@ -73,6 +75,7 @@ public class OpenAIService {
         return reseponse.getBody();
     }
 
+    @TimeTrace
     public Object getChatSimpleResponse(String question) {
         // 1. 헤더 구성
         HttpHeaders headers = getOpenAiHeader();
