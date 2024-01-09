@@ -3,13 +3,13 @@ package com.compono.ibackend.common.utils.jwt;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.jsonwebtoken.Claims;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
+@DisplayName("JWT 발급, 파싱 테스트")
 @SpringBootTest(classes = {JwtProvider.class})
-@ActiveProfiles("local")
 class JwtProviderTest {
 
     @Autowired
