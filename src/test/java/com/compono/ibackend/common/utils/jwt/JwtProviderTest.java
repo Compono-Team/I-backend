@@ -3,13 +3,21 @@ package com.compono.ibackend.common.utils.jwt;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.jsonwebtoken.Claims;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @DisplayName("JWT 발급, 파싱 테스트")
-@SpringBootTest(classes = {JwtProvider.class})
+@SpringBootTest(classes = {JwtProvider.class},
+        properties = {
+                "jwt.secret=sdjkjskjdkjskdjkswdnlkqwnlfkdnlkqwnfkqwnf",
+                "jwt.issuer=compono",
+                "jwt.access-token-expiration-minute=30",
+                "jwt.refresh-token-expiration-minute=7200"}
+)
 class JwtProviderTest {
 
     @Autowired
@@ -33,6 +41,7 @@ class JwtProviderTest {
 
     @Test
     void getClaims() {
+        Instant now = Instant.now();
         String email = "test@gmail.com";
         String accessToken = jwtProvider.createAccessToken(email);
 
@@ -42,5 +51,6 @@ class JwtProviderTest {
 
         assertThat(subject).isEqualTo(email);
         assertThat(username).isEqualTo(email);
+        assertThat(claims.getExpiration()).isBefore(now.plus(7199, ChronoUnit.MINUTES));
     }
 }
