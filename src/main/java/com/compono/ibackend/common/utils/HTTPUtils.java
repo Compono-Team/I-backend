@@ -51,9 +51,9 @@ public class HTTPUtils {
      * @return
      */
     public static <T> ResponseEntity<T> post(
-            String url, HttpHeaders headers, String body, Class<T> className) {
+            String url, HttpHeaders headers, Object body, Class<T> className) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        HttpEntity<Object> entity = new HttpEntity<>(body, headers);
         ResponseEntity<T> response = restTemplate.postForEntity(url, entity, className);
 
         if (response.getStatusCode() != HttpStatus.OK) {
