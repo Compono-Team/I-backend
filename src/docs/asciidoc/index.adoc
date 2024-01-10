@@ -21,3 +21,6 @@ include::api/prereservation/create-prereservation.adoc[]
 
 == 사전예약 조회
 include::api/prereservation/get-prereservation.adoc[]
+
+== 사전예약 페이지 조회
+include::api/prereservation/get-prereservations.adoc[]
