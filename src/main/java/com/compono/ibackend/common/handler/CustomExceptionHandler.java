@@ -29,7 +29,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<ErrorDTO> handleBadRequestException(BadRequestException ex) {
         log.warn(
                 String.format(
-                        "http-status={%d} code={%d} msg={%s}",
+                        "http-status={%s} code={%d} msg={%s}",
                         HttpStatus.BAD_REQUEST, ex.getCode(), ex.getMessage()));
 
         return ResponseEntity.badRequest().body(new ErrorDTO(ex.getCode(), ex.getMessage()));
