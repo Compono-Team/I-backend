@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    private static final String[] DEFAULT_WHITELIST = {"/status", "/images/**", "/error/**"};
+    private static final String[] DEFAULT_WHITELIST = {"/status", "/images/**", "/error/**", "/api/v1/oauth/**"};
 
     private static final String[] DEVELOP_TEST_PATH = {"api/develop/**", "/api/develop/**"};
 
