@@ -16,9 +16,14 @@ public enum ErrorCode {
     OPEN_API_REQUEST_FAIL(4006, "OPEN API 요청에 실패하였습니다"),
     INVALID_EVENTDATETIME(4007, "유효한지 않은 EventDateTime 값입니다."),
     DUPLICATED_FAILED(4008, "이미 데이터가 존재합니다."),
+    NOT_FOUND_USER_ID(4009, "유저 ID가 존재하지 않습니다."),
 
     // 401
-    EXPIRED_TOKEN(4010, "만료된 토큰입니다.");
+    EXPIRED_TOKEN(4010, "만료된 토큰입니다."),
+    NOT_EXIST_COOKIE(4011, "쿠키가 존재하지 않습니다."),
+    COOKIE_EXPIRATION(4012, "만료된 리프레시 토큰입니다."),
+    INVALID_OAUTH_PROVIDER(4013, "유효한 OAUTH 제공자가 아닙니다."),
+    INVALID_TOKEN(4014, "유효한 토큰이 아닙니다.");
 
     private final int code;
     private final String msg;
