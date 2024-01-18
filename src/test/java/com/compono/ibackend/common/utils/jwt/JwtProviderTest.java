@@ -43,15 +43,16 @@ class JwtProviderTest {
     @Test
     void getClaims() {
         Instant now = Instant.now();
-        String email = "test@gmail.com";
-        String accessToken = jwtProvider.createAccessToken(email);
+        String email1 = "test@gmail.com";
+        String accessToken = jwtProvider.createAccessToken(email1);
 
         Claims claims = jwtProvider.getClaims(accessToken);
         String subject = claims.getSubject();
-        String username = (String) claims.get("username");
 
-        assertThat(subject).isEqualTo(email);
-        assertThat(username).isEqualTo(email);
+        String email2 = (String) claims.get("email");
+
+        assertThat(subject).isEqualTo(email1);
+        assertThat(email1).isEqualTo(email2);
         assertThat(claims.getExpiration()).isBefore(now.plus(7199, ChronoUnit.MINUTES));
     }
 }
