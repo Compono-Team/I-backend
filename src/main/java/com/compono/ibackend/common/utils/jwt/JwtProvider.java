@@ -28,16 +28,17 @@ public class JwtProvider {
     private long refreshTokenExpirationMinute;
 
     // Claim : JWT 에 넣을 내용(eg body, 부가적으로 사용할 정보를 넣을 수 있음)
-    private Map<String, Object> createClaims(String username) {
-        return Map.of("username", username);
+    private Map<String, Object> createClaims(String email) {
+
+        return Map.of("email", email);
     }
 
-    public String createAccessToken(String username) {
+    public String createAccessToken(String email) {
         Instant now = Instant.now();
-        Map<String, Object> claims = createClaims(username);
+        Map<String, Object> claims = createClaims(email);
         return Jwts.builder()
                 .issuer(issuer)
-                .subject(username)
+                .subject(email)
                 .claims(claims)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(accessTokenExpirationMinute, ChronoUnit.MINUTES)))
@@ -45,11 +46,11 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String createRefreshToken(String username) {
+    public String createRefreshToken(String email) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .issuer(issuer)
-                .subject(username)
+                .subject(email)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(refreshTokenExpirationMinute, ChronoUnit.MINUTES)))
                 .signWith(getSecretKey())
