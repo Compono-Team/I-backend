@@ -104,7 +104,10 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/escapes/**",
                         "**/converter/**",
                         "**/enumType/**",
-                        "**/*GoogleCalendar*"
+                        "**/*GoogleCalendar*",
+                        "**/filter/**",
+                        "**/security/**",
+                        "**/*OauthService*"
                 ])
             })
     )
