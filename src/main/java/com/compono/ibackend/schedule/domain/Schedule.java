@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-@Table(name = "`schedule`")
+@Table(name = "`schedule_info`")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,13 +59,11 @@ public class Schedule {
     private TaskStatus taskStatus;
 
     @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL)
-    @Column( nullable = false)
     private Point point;
 
-    @Column(name = "order", nullable = false)
+    @Column(name = "schedule_order", nullable = false)
     private int order;
 
     @Column(name = "is_marked", nullable = false)
     private Boolean isMarked;
-
 }

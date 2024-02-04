@@ -31,7 +31,6 @@ public class Point {
     private Double latitude;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    @Column( nullable = false)
+    @JoinColumn(name = "id")
     private Schedule schedule;
 }
