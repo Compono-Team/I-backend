@@ -3,8 +3,8 @@ package com.compono.ibackend.schedule.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.compono.ibackend.common.converter.TimestampConverter;
-import com.compono.ibackend.schedule.enumType.ScheduleType;
 import com.compono.ibackend.schedule.enumType.TaskStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -13,8 +13,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,14 +58,12 @@ public class Schedule {
     @Column(name = "task_status", nullable = false)
     private TaskStatus taskStatus;
 
-    //private point point
+    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL)
+    @Column( nullable = false)
+    private Point point;
 
     @Column(name = "order", nullable = false)
     private int order;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
-    private ScheduleType type;
 
     @Column(name = "is_marked", nullable = false)
     private Boolean isMarked;
