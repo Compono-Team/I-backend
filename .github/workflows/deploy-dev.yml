@@ -92,7 +92,7 @@ jobs:
 
       # CodeDeploy 배포를 위한 관련 파일 업로드용 디렉토리 생성
       - name: Create zip file for AWS CodeDeploy
-        run: mkdir ${{ env.AWS_CODEDEPLOY_APPNAME }} && cp -r appspec.yml docker-compose.yml scripts/codedeploy ${{ env.AWS_CODEDEPLOY_APPNAME }}
+        run: mkdir ${{ env.AWS_CODEDEPLOY_APPNAME }} && cp -r appspec.yml docker-compose.yml codedeploy/scripts ${{ env.AWS_CODEDEPLOY_APPNAME }}
 
       # AWS S3로 배포 관련 파일 압축 및 업로드
       - name: Upload to AWS S3
