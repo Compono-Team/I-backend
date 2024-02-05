@@ -210,6 +210,7 @@ bootJar {
 spotless {
     java {
         target("**/*.java")
+        targetExclude("src/main/generated/*")
         importOrder() // import 순서 정의
         removeUnusedImports() // 사용하지 않는 import 제거
         trimTrailingWhitespace() // 공백 제거
