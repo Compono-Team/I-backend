@@ -1,4 +1,4 @@
-# CodeDeploy용 appspec.yml
+# CodeDeploy용 appspec.yaml
 version: 0.0
 os: linux
 files:

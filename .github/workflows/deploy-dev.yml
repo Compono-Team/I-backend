@@ -2,7 +2,7 @@ name: Deploy to Dev Server
 
 on:
   push:
-    branches: [ "develop", "chore/issue-14" ]
+    branches: [ "chore/issue-14" ]
 
 
 jobs:
@@ -76,7 +76,7 @@ jobs:
       - name: Image name replace
         run: |
           export ESCAPED_REPLACE=$(echo '${{ env.NEW_IMAGE_NAME }}' | sed -e 's/[\/&\$&\"&]/\\&/g')
-          sed -i 's/_IMAGE_NAME_/'$ESCAPED_REPLACE'/g' docker-compose.yml
+          sed -i 's/_IMAGE_NAME_/'$ESCAPED_REPLACE'/g' docker-compose.yaml
           sed -i 's/_IMAGE_NAME_/'$ESCAPED_REPLACE'/g' scripts/codedeploy/ApplicationStart.sh
 
       # 그 외 변수 쓰기
@@ -88,11 +88,11 @@ jobs:
           sed -i 's/_AWS_REGION_/'$AWS_REGION'/g' scripts/codedeploy/ApplicationStart.sh
           sed -i 's/_AWS_ECR_URI_/'$AWS_ECR_URI'/g' scripts/codedeploy/ApplicationStart.sh
           sed -i 's/_DEPLOY_DIR_/'$DEPLOY_DIR'/g' scripts/codedeploy/ApplicationStart.sh
-          sed -i 's/_DEPLOY_DIR_/'$DEPLOY_DIR'/g' appspec.yml
+          sed -i 's/_DEPLOY_DIR_/'$DEPLOY_DIR'/g' appspec.yaml
 
       # CodeDeploy 배포를 위한 관련 파일 업로드용 디렉토리 생성
       - name: Create zip file for AWS CodeDeploy
-        run: mkdir ${{ env.AWS_CODEDEPLOY_APPNAME }} && cp -r appspec.yml docker-compose.yml scripts/codedeploy ${{ env.AWS_CODEDEPLOY_APPNAME }}
+        run: mkdir ${{ env.AWS_CODEDEPLOY_APPNAME }} && cp -r appspec.yaml docker-compose.yaml scripts/codedeploy ${{ env.AWS_CODEDEPLOY_APPNAME }}
 
       # AWS S3로 배포 관련 파일 압축 및 업로드
       - name: Upload to AWS S3
