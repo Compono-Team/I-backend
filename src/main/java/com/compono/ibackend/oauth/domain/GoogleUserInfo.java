@@ -31,11 +31,6 @@ public class GoogleUserInfo implements OauthUserInfo {
     }
 
     public OauthLoginResponse from(boolean isRegistered) {
-        return new OauthLoginResponse(
-                getProviderId(),
-                getEmail(),
-                getNickName(),
-                isRegistered
-        );
+        return new OauthLoginResponse(getProviderId(), getEmail(), getNickName(), isRegistered);
     }
 }

@@ -36,11 +36,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @MockBean
-    private UserService UserService;
+    @MockBean private UserService UserService;
 
     @DisplayName("{POST} 회원등록 - 정상호출")
     @WithMockUser(
@@ -55,8 +53,7 @@ class UserControllerTest {
         request.put("oauthProviderUniqueKey", "1233543412");
         request.put("isAuthenticated", true);
 
-        when(UserService.addUser(any(UserAddRequest.class)))
-                .thenReturn(createUserAddResponse());
+        when(UserService.addUser(any(UserAddRequest.class))).thenReturn(createUserAddResponse());
 
         mvc.perform(
                         RestDocumentationRequestBuilders.post("/api/v1/users")
@@ -70,12 +67,8 @@ class UserControllerTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(
-                                        fieldWithPath("email")
-                                                .type(STRING)
-                                                .description("이메일"),
-                                        fieldWithPath("nickname")
-                                                .type(STRING)
-                                                .description("닉네임"),
+                                        fieldWithPath("email").type(STRING).description("이메일"),
+                                        fieldWithPath("nickname").type(STRING).description("닉네임"),
                                         fieldWithPath("oauthProvider")
                                                 .type(STRING)
                                                 .description("Oauth 제공자"),
@@ -85,17 +78,10 @@ class UserControllerTest {
                                         fieldWithPath("isAuthenticated")
                                                 .type(BOOLEAN)
                                                 .description("인증 여부")),
-
                                 responseFields(
-                                        fieldWithPath("id")
-                                                .type(NUMBER)
-                                                .description("유저 id"),
-                                        fieldWithPath("email")
-                                                .type(STRING)
-                                                .description("이메일"),
-                                        fieldWithPath("nickname")
-                                                .type(STRING)
-                                                .description("닉네임"))))
+                                        fieldWithPath("id").type(NUMBER).description("유저 id"),
+                                        fieldWithPath("email").type(STRING).description("이메일"),
+                                        fieldWithPath("nickname").type(STRING).description("닉네임"))))
                 .andExpect(status().isCreated());
     }
 

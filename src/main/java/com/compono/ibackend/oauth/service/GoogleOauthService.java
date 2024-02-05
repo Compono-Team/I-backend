@@ -43,10 +43,11 @@ public class GoogleOauthService implements OauthService<OauthLoginRequest> {
     private static final int COOKIE_MAX_AGE = 60 * 60 * 24 * 200;
 
     @Override
-    public OauthLoginResponse login(OauthLoginRequest param, HttpServletResponse httpServletResponse) {
+    public OauthLoginResponse login(
+            OauthLoginRequest param, HttpServletResponse httpServletResponse) {
 
-        ClientRegistration provider = clientRegistrationRepository.findByRegistrationId(
-                param.provider());
+        ClientRegistration provider =
+                clientRegistrationRepository.findByRegistrationId(param.provider());
         OauthTokenDTO oauthToken = getOauthToken(param.code(), provider);
 
         GoogleUserInfo googleUser = getUserInfoFromGoogle(param.provider(), oauthToken, provider);
@@ -77,17 +78,20 @@ public class GoogleOauthService implements OauthService<OauthLoginRequest> {
         return WebClient.create()
                 .post()
                 .uri(provider.getProviderDetails().getTokenUri())
-                .headers(header -> {
-                    header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                    header.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
-                })
+                .headers(
+                        header -> {
+                            header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                            header.setAcceptCharset(
+                                    Collections.singletonList(StandardCharsets.UTF_8));
+                        })
                 .bodyValue(createOauthRequestBody(code, provider))
                 .retrieve()
                 .bodyToMono(OauthTokenDTO.class)
                 .block();
     }
 
-    private MultiValueMap<String, String> createOauthRequestBody(String code, ClientRegistration provider) {
+    private MultiValueMap<String, String> createOauthRequestBody(
+            String code, ClientRegistration provider) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("code", code);
         formData.add("grant_type", "authorization_code");
@@ -97,8 +101,8 @@ public class GoogleOauthService implements OauthService<OauthLoginRequest> {
         return formData;
     }
 
-    private GoogleUserInfo getUserInfoFromGoogle(String providerName, OauthTokenDTO oauthToken,
-                                                 ClientRegistration provider) {
+    private GoogleUserInfo getUserInfoFromGoogle(
+            String providerName, OauthTokenDTO oauthToken, ClientRegistration provider) {
         if (!providerName.equals(OauthProvider.GOOGLE.getValue())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_OAUTH_PROVIDER);
         }
@@ -106,14 +110,14 @@ public class GoogleOauthService implements OauthService<OauthLoginRequest> {
         return new GoogleUserInfo(userAttributes);
     }
 
-    private Map<String, Object> getUserAttribute(ClientRegistration provider, OauthTokenDTO oauthToken) {
+    private Map<String, Object> getUserAttribute(
+            ClientRegistration provider, OauthTokenDTO oauthToken) {
         return WebClient.create()
                 .get()
                 .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
                 .headers(header -> header.setBearerAuth(String.valueOf(oauthToken.accessToken())))
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                 .block();
     }
 

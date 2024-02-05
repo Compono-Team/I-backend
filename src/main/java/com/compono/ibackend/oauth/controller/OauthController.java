@@ -21,19 +21,21 @@ public class OauthController {
     private final OauthService<OauthLoginRequest> kakaoOauthService;
     private final OauthService<OauthLoginRequest> googleOauthService;
 
-
     @GetMapping("/{provider}")
-    public ResponseEntity<OauthLoginResponse> oauthLoginCallback(@PathVariable String provider,
-                                                                 @RequestParam String code,
-                                                                 HttpServletResponse httpServletResponse) {
+    public ResponseEntity<OauthLoginResponse> oauthLoginCallback(
+            @PathVariable String provider,
+            @RequestParam String code,
+            HttpServletResponse httpServletResponse) {
         OauthLoginRequest oauthLoginRequestDTO = new OauthLoginRequest(provider, code);
         if (isProviderKakao(provider)) {
-            OauthLoginResponse res = kakaoOauthService.login(oauthLoginRequestDTO, httpServletResponse);
+            OauthLoginResponse res =
+                    kakaoOauthService.login(oauthLoginRequestDTO, httpServletResponse);
             return ResponseEntity.ok().body(res);
         }
 
         if (isProviderGoogle(provider)) {
-            OauthLoginResponse res = googleOauthService.login(oauthLoginRequestDTO, httpServletResponse);
+            OauthLoginResponse res =
+                    googleOauthService.login(oauthLoginRequestDTO, httpServletResponse);
             return ResponseEntity.ok().body(res);
         }
 

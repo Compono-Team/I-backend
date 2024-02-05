@@ -27,8 +27,8 @@ public class AuthService {
     private static final String REFRESH_TOKEN_NAME = "refresh_token";
     private static final String JWT_PREFIX = "Bearer ";
 
-    public AuthRefreshResponse refresh(HttpServletRequest httpServletRequest,
-                                       HttpServletResponse httpServletResponse) {
+    public AuthRefreshResponse refresh(
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         if (httpServletRequest.getCookies() == null) {
             throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NOT_EXIST_COOKIE);
@@ -38,8 +38,14 @@ public class AuthService {
         Claims claims = jwtProvider.getClaims(refreshToken);
         String email = claims.getSubject();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER_ID));
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () ->
+                                        new CustomException(
+                                                HttpStatus.BAD_REQUEST,
+                                                ErrorCode.NOT_FOUND_USER_ID));
 
         Date now = Date.from(Instant.now());
         if (claims.getExpiration().before(now)) {
@@ -59,10 +65,15 @@ public class AuthService {
     }
 
     private String getCookieFromHttpServletRequest(HttpServletRequest httpServletRequest) {
-        Cookie cookie = Arrays.stream(httpServletRequest.getCookies())
-                .filter(c -> c.getName().equals(REFRESH_TOKEN_NAME))
-                .findFirst()
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXIST_COOKIE));
+        Cookie cookie =
+                Arrays.stream(httpServletRequest.getCookies())
+                        .filter(c -> c.getName().equals(REFRESH_TOKEN_NAME))
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new CustomException(
+                                                HttpStatus.BAD_REQUEST,
+                                                ErrorCode.NOT_EXIST_COOKIE));
         return cookie.getValue();
     }
 }

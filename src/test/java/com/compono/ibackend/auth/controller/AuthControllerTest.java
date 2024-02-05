@@ -35,12 +35,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 class AuthControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @MockBean
-    private AuthService authService;
-
+    @MockBean private AuthService authService;
 
     @DisplayName("{POST} Access Token 리프레시 - 정상호출")
     @Test
@@ -62,15 +59,8 @@ class AuthControllerTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 responseFields(
-                                        fieldWithPath("id")
-                                                .type(NUMBER)
-                                                .description("유저 id"),
-                                        fieldWithPath("email")
-                                                .type(STRING)
-                                                .description("유저 이메일")
-                                )
-                        )
-                )
+                                        fieldWithPath("id").type(NUMBER).description("유저 id"),
+                                        fieldWithPath("email").type(STRING).description("유저 이메일"))))
                 .andExpect(status().isOk());
     }
 

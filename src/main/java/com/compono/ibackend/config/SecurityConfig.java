@@ -28,26 +28,33 @@ public class SecurityConfig {
 
     private final AuthService authService;
 
-    private static final String[] DEFAULT_WHITELIST = {"/status", "/images/**", "/error/**", "/api/v1/oauth/**",
-            "/api/v1/users/**"};
+    private static final String[] DEFAULT_WHITELIST = {
+        "/status", "/images/**", "/error/**", "/api/v1/oauth/**", "/api/v1/users/**"
+    };
 
     private static final String[] DEVELOP_TEST_PATH = {"api/develop/**", "/api/develop/**"};
 
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable)
                 .cors(customCorsConfig())
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(DEFAULT_WHITELIST).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .headers(header -> header
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .authorizeHttpRequests(
+                        request ->
+                                request.requestMatchers(DEFAULT_WHITELIST)
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated())
+                .headers(
+                        header ->
+                                header.frameOptions(
+                                        HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtVerificationFilter(authService), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(
+                        new JwtVerificationFilter(authService),
+                        UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -62,8 +69,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOriginPatterns(List.of("*"));
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "https://www.axyz.today"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("POST", "GET", "DELETE", "PATCH", "PUT", "OPTIONS"));
+        corsConfiguration.setAllowedOrigins(
+                List.of("http://localhost:3000", "https://www.axyz.today"));
+        corsConfiguration.setAllowedMethods(
+                Arrays.asList("POST", "GET", "DELETE", "PATCH", "PUT", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.addExposedHeader("*");
@@ -74,5 +83,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
-
 }
