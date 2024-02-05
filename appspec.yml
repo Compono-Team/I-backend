@@ -15,11 +15,11 @@ permissions:
 
 hooks:
   ApplicationStop:
-    - location: scripts/codedeploy/ApplicationStop.sh
+    - location: codedeploy/ApplicationStop.sh
       timeout: 60
       runas: root
 
   ApplicationStart:
-    - location: scripts/codedeploy/ApplicationStart.sh
+    - location: codedeploy/ApplicationStart.sh
       timeout: 60
       runas: root
