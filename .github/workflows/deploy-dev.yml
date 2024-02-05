@@ -46,11 +46,6 @@ jobs:
       - name: Run chmod to make gradlew executable
         run: chmod +x gradlew
 
-      - name: Spotless Apply
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: spotlessApply
-
       - name: Gradle Build
         uses: gradle/gradle-build-action@v2
         with:
