@@ -70,7 +70,7 @@ jobs:
 
       - name: Copy files for CodeDeploy from submodule
         run: |
-          cp -r submodule/* .
+          cp -r config/* .
 
       # Docker compose, ApplicationStart.sh에 새 이미지명 쓰기
       - name: Image name replace
@@ -104,11 +104,11 @@ jobs:
             --source ${{ env.AWS_CODEDEPLOY_NAME }}
 
       # AWS EC2 CodeDeploy 배포 요청
-      - name: Deploy to AWS EC2
+      - name: Deploy to Dev Server
         run: |
           aws deploy create-deployment \
             --application-name ${{ env.AWS_CODEDEPLOY_APPNAME }} \
             --s3-location bucket=$AWS_S3_BUCKET_NAME,key=codedeploy/$GITHUB_SHA.zip,bundleType=zip \
             --deployment-group-name ${{ env.AWS_CODEDEPLOY_GROUP }} \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --description "Deploy Dev server"
+            --description "Deploy Dev Server"
