@@ -77,7 +77,7 @@ jobs:
         run: |
           export ESCAPED_REPLACE=$(echo '${{ env.NEW_IMAGE_NAME }}' | sed -e 's/[\/&\$&\"&]/\\&/g')
           sed -i 's/_IMAGE_NAME_/'$ESCAPED_REPLACE'/g' docker-compose.yml
-          sed -i 's/_IMAGE_NAME_/'$ESCAPED_REPLACE'/g' scripts/ApplicationStart.sh
+          sed -i 's/_IMAGE_NAME_/'$ESCAPED_REPLACE'/g' scripts/codedeploy/ApplicationStart.sh
 
       # 그 외 변수 쓰기
       - name: Variable replace
@@ -85,9 +85,9 @@ jobs:
           export AWS_REGION=$(echo '${{ env.AWS_REGION }}' | sed -e 's/[\/&\$&\"&]/\\&/g')
           export AWS_ECR_URI=$(echo '${{ env.AWS_ECR_URI }}' | sed -e 's/[\/&\$&\"&]/\\&/g')
           export DEPLOY_DIR=$(echo '${{ env.DEPLOY_DIR }}' | sed -e 's/[\/&\$&\"&]/\\&/g')
-          sed -i 's/_AWS_REGION_/'$AWS_REGION'/g' scripts/ApplicationStart.sh
-          sed -i 's/_AWS_ECR_URI_/'$AWS_ECR_URI'/g' scripts/ApplicationStart.sh
-          sed -i 's/_DEPLOY_DIR_/'$DEPLOY_DIR'/g' scripts/ApplicationStart.sh
+          sed -i 's/_AWS_REGION_/'$AWS_REGION'/g' scripts/codedeploy/ApplicationStart.sh
+          sed -i 's/_AWS_ECR_URI_/'$AWS_ECR_URI'/g' scripts/codedeploy/ApplicationStart.sh
+          sed -i 's/_DEPLOY_DIR_/'$DEPLOY_DIR'/g' scripts/codedeploy/ApplicationStart.sh
           sed -i 's/_DEPLOY_DIR_/'$DEPLOY_DIR'/g' appspec.yml
 
       # CodeDeploy 배포를 위한 관련 파일 업로드용 디렉토리 생성
