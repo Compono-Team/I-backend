@@ -29,12 +29,9 @@ public class AuthService {
 
     public AuthRefreshResponse refresh(HttpServletRequest httpServletRequest,
                                        HttpServletResponse httpServletResponse) {
-
-        if (httpServletRequest.getCookies() == null) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NOT_EXIST_COOKIE);
-        }
-
         String refreshToken = getCookieFromHttpServletRequest(httpServletRequest);
+        assert refreshToken != null;
+
         Claims claims = jwtProvider.getClaims(refreshToken);
         String email = claims.getSubject();
 
@@ -51,7 +48,7 @@ public class AuthService {
         String newAccessToken = JWT_PREFIX + newAccessTokenValue;
         httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
 
-        return new AuthRefreshResponse(userId, email);
+        return AuthRefreshResponse.of(userId, email);
     }
 
     public Claims getClaims(String accessToken) {
@@ -59,6 +56,10 @@ public class AuthService {
     }
 
     private String getCookieFromHttpServletRequest(HttpServletRequest httpServletRequest) {
+        if (httpServletRequest.getCookies() == null) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NOT_EXIST_COOKIE);
+        }
+
         Cookie cookie = Arrays.stream(httpServletRequest.getCookies())
                 .filter(c -> c.getName().equals(REFRESH_TOKEN_NAME))
                 .findFirst()
