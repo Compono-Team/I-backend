@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  i-backend-dev-service:
+    container_name: i-backend-dev
+    image: _IMAGE_NAME_
+    ports:
+      - 8080:8080
