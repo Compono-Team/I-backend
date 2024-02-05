@@ -101,7 +101,7 @@ jobs:
             --application-name ${{ env.AWS_CODEDEPLOY_APPNAME }} \
             --s3-location s3://${{ env.AWS_S3_BUCKET_NAME }}/codedeploy/$GITHUB_SHA.zip \
             --ignore-hidden-files \
-            --source ${{ env.AWS_CODEDEPLOY_NAME }}
+            --source ${{ env.AWS_CODEDEPLOY_APPNAME }}
 
       # AWS EC2 CodeDeploy 배포 요청
       - name: Deploy to Dev Server
