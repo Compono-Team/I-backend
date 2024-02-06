@@ -34,11 +34,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 class GoogleOauthControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @MockBean
-    private OauthService<OauthLoginRequest> googleOauthService;
+    @MockBean private OauthService<OauthLoginRequest> googleOauthService;
 
     @DisplayName("{GET} Oauth 로그인 google - 정상호출")
     @Test
@@ -71,10 +69,7 @@ class GoogleOauthControllerTest {
                                                 .description("Oauth 등록 닉네임"),
                                         fieldWithPath("isRegistered")
                                                 .type(BOOLEAN)
-                                                .description("회원가입 여부")
-                                )
-                        )
-                )
+                                                .description("회원가입 여부"))))
                 .andExpect(status().isOk());
     }
 

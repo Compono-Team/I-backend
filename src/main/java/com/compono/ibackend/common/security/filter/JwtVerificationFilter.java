@@ -31,9 +31,10 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain)
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         try {
             setAuthenticationToContext(request);
@@ -55,8 +56,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         Claims claims = authService.getClaims(accessToken);
         UserDetailsImpl userDetails = new UserDetailsImpl(claims);
 
-        return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
-                userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(
+                userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     private String getAuthenticationHeaderValue(HttpServletRequest request) {

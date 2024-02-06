@@ -10,7 +10,6 @@ public class KakaoUserInfo implements OauthUserInfo {
 
     private final Map<String, Object> attributes;
 
-
     @Override
     public String getProviderId() {
         return String.valueOf(attributes.get("id"));
@@ -40,11 +39,6 @@ public class KakaoUserInfo implements OauthUserInfo {
     }
 
     public OauthLoginResponse from(boolean isRegistered) {
-        return new OauthLoginResponse(
-                getProviderId(),
-                getEmail(),
-                getNickName(),
-                isRegistered
-        );
+        return new OauthLoginResponse(getProviderId(), getEmail(), getNickName(), isRegistered);
     }
 }

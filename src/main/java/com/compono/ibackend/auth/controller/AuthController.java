@@ -18,8 +18,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthRefreshResponse> refresh(HttpServletRequest httpServletRequest,
-                                                       HttpServletResponse httpServletResponse) {
+    public ResponseEntity<AuthRefreshResponse> refresh(
+            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         AuthRefreshResponse res = authService.refresh(httpServletRequest, httpServletResponse);
         return ResponseEntity.ok().body(res);

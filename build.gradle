@@ -210,6 +210,7 @@ bootJar {
 spotless {
     java {
         target("**/*.java")
+        targetExclude("**/generated/**")
         importOrder() // import 순서 정의
         removeUnusedImports() // 사용하지 않는 import 제거
         trimTrailingWhitespace() // 공백 제거
@@ -217,7 +218,6 @@ spotless {
         googleJavaFormat().aosp() // google java format
     }
 }
-
 
 task copyGitSubmodule(type: Copy) {
     copy {
