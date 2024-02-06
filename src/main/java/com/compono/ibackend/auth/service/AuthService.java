@@ -22,48 +22,54 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final JwtProvider jwtProvider;
-    private final UserRepository userRepository;
-    private static final String REFRESH_TOKEN_NAME = "refresh_token";
-    private static final String JWT_PREFIX = "Bearer ";
+  private final JwtProvider jwtProvider;
+  private final UserRepository userRepository;
+  private static final String REFRESH_TOKEN_NAME = "refresh_token";
+  private static final String JWT_PREFIX = "Bearer ";
 
-    public AuthRefreshResponse refresh(HttpServletRequest httpServletRequest,
-                                       HttpServletResponse httpServletResponse) {
-        String refreshToken = getCookieFromHttpServletRequest(httpServletRequest);
-        assert refreshToken != null;
+  public AuthRefreshResponse refresh(HttpServletRequest httpServletRequest,
+      HttpServletResponse httpServletResponse) {
+    String refreshToken = getCookieFromHttpServletRequest(httpServletRequest);
+    assert refreshToken != null;
 
-        Claims claims = jwtProvider.getClaims(refreshToken);
-        String email = claims.getSubject();
+    Claims claims = jwtProvider.getClaims(refreshToken);
+    String email = claims.getSubject();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER_ID));
+    User user =
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(
+                () ->
+                    new CustomException(
+                        HttpStatus.BAD_REQUEST,
+                        ErrorCode.NOT_FOUND_USER_ID));
 
-        Date now = Date.from(Instant.now());
-        if (claims.getExpiration().before(now)) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.COOKIE_EXPIRATION);
-        }
-
-        Long userId = user.getId();
-        String newAccessTokenValue = jwtProvider.createAccessToken(user.getEmail());
-        String newAccessToken = JWT_PREFIX + newAccessTokenValue;
-        httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
-
-        return AuthRefreshResponse.of(userId, email);
+    Date now = Date.from(Instant.now());
+    if (claims.getExpiration().before(now)) {
+      throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.COOKIE_EXPIRATION);
     }
 
-    public Claims getClaims(String accessToken) {
-        return jwtProvider.getClaims(accessToken);
+    Long userId = user.getId();
+    String newAccessTokenValue = jwtProvider.createAccessToken(user.getEmail());
+    String newAccessToken = JWT_PREFIX + newAccessTokenValue;
+    httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
+
+    return AuthRefreshResponse.of(userId, email);
+  }
+
+  public Claims getClaims(String accessToken) {
+    return jwtProvider.getClaims(accessToken);
+  }
+
+  private String getCookieFromHttpServletRequest(HttpServletRequest httpServletRequest) {
+    if (httpServletRequest.getCookies() == null) {
+      throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NOT_EXIST_COOKIE);
     }
 
-    private String getCookieFromHttpServletRequest(HttpServletRequest httpServletRequest) {
-        if (httpServletRequest.getCookies() == null) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NOT_EXIST_COOKIE);
-        }
-
-        Cookie cookie = Arrays.stream(httpServletRequest.getCookies())
-                .filter(c -> c.getName().equals(REFRESH_TOKEN_NAME))
-                .findFirst()
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXIST_COOKIE));
-        return cookie.getValue();
-    }
+    Cookie cookie = Arrays.stream(httpServletRequest.getCookies())
+        .filter(c -> c.getName().equals(REFRESH_TOKEN_NAME))
+        .findFirst()
+        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_EXIST_COOKIE));
+    return cookie.getValue();
+  }
 }

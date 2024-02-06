@@ -30,20 +30,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-    @Mock
-    private JwtProvider jwtProvider;
+    @Mock private JwtProvider jwtProvider;
 
-    @Mock
-    private UserRepository userRepository;
+    @Mock private UserRepository userRepository;
 
-    @Mock
-    HttpServletRequest httpServletRequest;
+    @Mock HttpServletRequest httpServletRequest;
 
-    @Mock
-    HttpServletResponse httpServletResponse;
+    @Mock HttpServletResponse httpServletResponse;
 
-    @InjectMocks
-    private AuthService authService;
+    @InjectMocks private AuthService authService;
 
     @Test
     void refresh() {
@@ -51,14 +46,11 @@ class AuthServiceTest {
         String email = "compono@test.com";
         Cookie cookie = new Cookie("refresh_token", refreshTokenValue);
 
-        when(httpServletRequest.getCookies())
-                .thenReturn(new Cookie[]{cookie});
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {cookie});
 
-        when(jwtProvider.getClaims(anyString()))
-                .thenReturn(createClaims(email, 60L));
+        when(jwtProvider.getClaims(anyString())).thenReturn(createClaims(email, 60L));
 
-        when(userRepository.findByEmail(email))
-                .thenReturn(Optional.of(createUser(email)));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(createUser(email)));
 
         AuthRefreshResponse response = authService.refresh(httpServletRequest, httpServletResponse);
 
@@ -67,8 +59,7 @@ class AuthServiceTest {
 
     @Test
     void refresh_exception_when_cookies_null() {
-        when(httpServletRequest.getCookies())
-                .thenReturn(null);
+        when(httpServletRequest.getCookies()).thenReturn(null);
 
         assertThatThrownBy(() -> authService.refresh(httpServletRequest, httpServletResponse))
                 .isInstanceOf(CustomException.class);
@@ -80,14 +71,11 @@ class AuthServiceTest {
         Cookie cookie = new Cookie("refresh_token", refreshTokenValue);
         String email = "compono@test.com";
 
-        when(jwtProvider.getClaims(anyString()))
-                .thenReturn(createClaims(email, -10L));
+        when(jwtProvider.getClaims(anyString())).thenReturn(createClaims(email, -10L));
 
-        when(userRepository.findByEmail(email))
-                .thenReturn(Optional.of(createUser(email)));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(createUser(email)));
 
-        when(httpServletRequest.getCookies())
-                .thenReturn(new Cookie[]{cookie});
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {cookie});
 
         assertThatThrownBy(() -> authService.refresh(httpServletRequest, httpServletResponse))
                 .isInstanceOf(CustomException.class);
@@ -99,26 +87,21 @@ class AuthServiceTest {
         String email = "compono@test.com";
         Cookie cookie = new Cookie("refresh_token", refreshTokenValue);
 
-        when(httpServletRequest.getCookies())
-                .thenReturn(new Cookie[]{cookie});
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] {cookie});
 
-        when(jwtProvider.getClaims(anyString()))
-                .thenReturn(createClaims(email, 60L));
+        when(jwtProvider.getClaims(anyString())).thenReturn(createClaims(email, 60L));
 
-        when(userRepository.findByEmail(email))
-                .thenThrow(CustomException.class);
+        when(userRepository.findByEmail(email)).thenThrow(CustomException.class);
 
         assertThatThrownBy(() -> authService.refresh(httpServletRequest, httpServletResponse))
                 .isInstanceOf(CustomException.class);
-
     }
 
     @Test
     void getClaims() {
         String accessToken = UUID.randomUUID().toString();
         String email = "compono@test.com";
-        when(jwtProvider.getClaims(anyString()))
-                .thenReturn(createClaims(email, 60L));
+        when(jwtProvider.getClaims(anyString())).thenReturn(createClaims(email, 60L));
 
         Claims claims = authService.getClaims(accessToken);
 
@@ -134,8 +117,9 @@ class AuthServiceTest {
     }
 
     private User createUser(String email) {
-        UserAddRequest request = new UserAddRequest(email, "compono", OauthProvider.KAKAO, UUID.randomUUID().toString(),
-                true);
+        UserAddRequest request =
+                new UserAddRequest(
+                        email, "compono", OauthProvider.KAKAO, UUID.randomUUID().toString(), true);
         return User.from(request);
     }
 }

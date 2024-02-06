@@ -34,11 +34,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 class KakaoOauthControllerTest {
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @MockBean
-    private OauthService<OauthLoginRequest> kakaoOauthService;
+    @MockBean private OauthService<OauthLoginRequest> kakaoOauthService;
 
     @DisplayName("{GET} Oauth 로그인 kakao - 정상호출")
     @Test
@@ -71,10 +69,7 @@ class KakaoOauthControllerTest {
                                                 .description("Oauth 등록 닉네임"),
                                         fieldWithPath("isRegistered")
                                                 .type(BOOLEAN)
-                                                .description("회원가입 여부")
-                                )
-                        )
-                )
+                                                .description("회원가입 여부"))))
                 .andExpect(status().isOk());
     }
 

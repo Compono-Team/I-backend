@@ -8,8 +8,7 @@ public record UserAddRequest(
         String nickname,
         OauthProvider oauthProvider,
         String oauthProviderUniqueKey,
-        Boolean isAuthenticated
-) {
+        Boolean isAuthenticated) {
     public User toEntity() {
         return User.from(this);
     }

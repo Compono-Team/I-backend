@@ -51,8 +51,12 @@ public class User {
     @Column(name = "user_status", nullable = false)
     private UserStatus userStatus;
 
-    private User(String email, String nickname, OauthProvider oauthProvider, String oauthProviderUniqueKey,
-                 Boolean isAuthenticated) {
+    private User(
+            String email,
+            String nickname,
+            OauthProvider oauthProvider,
+            String oauthProviderUniqueKey,
+            Boolean isAuthenticated) {
         this.email = email;
         this.nickname = nickname;
         this.oauthProvider = oauthProvider;

@@ -2,6 +2,6 @@ spring:
   profiles:
     group:
       local: "local, key"
-      dev: "dev, datasource, key"
+      dev: "dev, datasource-dev, key"
       prod: "production, datasource, key"
     active: local
