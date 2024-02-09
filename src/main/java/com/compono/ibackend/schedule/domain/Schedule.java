@@ -32,14 +32,6 @@ public class Schedule {
     @Column(name = "task_name", nullable = false, length = 100)
     private String taskName;
 
-    @Column(name = "start_time", nullable = false)
-    @Convert(converter = TimestampConverter.class)
-    private LocalDateTime startTime;
-
-    @Column(name = "end_time", nullable = false)
-    @Convert(converter = TimestampConverter.class)
-    private LocalDateTime endTime;
-
     @Column(name = "is_routine", nullable = false)
     private Boolean isRoutine;
 
