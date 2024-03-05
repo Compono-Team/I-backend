@@ -3,6 +3,8 @@ package com.compono.ibackend.schedule.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.compono.ibackend.common.converter.TimestampConverter;
+import com.compono.ibackend.schedule.enumType.RoutinePeriod;
+import com.compono.ibackend.schedule.enumType.SchedulePriority;
 import com.compono.ibackend.schedule.enumType.TaskStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,8 +34,16 @@ public class Schedule {
     @Column(name = "task_name", nullable = false, length = 100)
     private String taskName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority", nullable = false)
+    private SchedulePriority priority;
+
     @Column(name = "is_routine", nullable = false)
     private Boolean isRoutine;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "routine_period", nullable = false)
+    private RoutinePeriod routinePeriod;
 
     @Column(name = "start_date", nullable = false)
     @Convert(converter = TimestampConverter.class)
