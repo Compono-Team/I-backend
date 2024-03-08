@@ -66,10 +66,37 @@ public class Schedule {
     @Column(name = "is_marked", nullable = false)
     private Boolean isMarked;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "schedule",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<ScheduleTime> scheduleTimes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public static Schedule of(
+            String taskName,
+            Boolean isRoutine,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            String memo,
+            TaskStatus taskStatus,
+            int order,
+            Boolean isMarked,
+            User user) {
+        Schedule schedule = new Schedule();
+        schedule.taskName = taskName;
+        schedule.isRoutine = isRoutine;
+        schedule.startDate = startDate;
+        schedule.endDate = endDate;
+        schedule.memo = memo;
+        schedule.taskStatus = taskStatus;
+        schedule.order = order;
+        schedule.isMarked = isMarked;
+        schedule.user = user;
+        return schedule;
+    }
 }
