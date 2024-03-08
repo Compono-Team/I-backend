@@ -1,7 +1,5 @@
 package com.compono.ibackend.schedule.domain;
 
-import static lombok.AccessLevel.PROTECTED;
-
 import com.compono.ibackend.common.converter.TimestampConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -23,34 +21,32 @@ import lombok.NoArgsConstructor;
 @Table(name = "`schedule_time`")
 public class ScheduleTime {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "start_time", nullable = false)
-  @Convert(converter = TimestampConverter.class)
-  private LocalDateTime startTime;
+    @Column(name = "start_time", nullable = false)
+    @Convert(converter = TimestampConverter.class)
+    private LocalDateTime startTime;
 
-  @Column(name = "stop_time", nullable = false)
-  @Convert(converter = TimestampConverter.class)
-  private LocalDateTime stopTime;
+    @Column(name = "stop_time", nullable = false)
+    @Convert(converter = TimestampConverter.class)
+    private LocalDateTime stopTime;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "schedule_id", nullable = false)
-  private Schedule schedule;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
 
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
+    public void setStopTime(LocalDateTime stopTime) {
+        this.stopTime = stopTime;
+    }
 
-  public void setStartTime(LocalDateTime startTime){
-    this.startTime=startTime;
-  }
-
-  public void setStopTime(LocalDateTime stopTime) {
-    this.stopTime = stopTime;
-  }
-
-  public void setSchedule(Schedule schedule) {
-    this.schedule = schedule;
-  }
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
 }

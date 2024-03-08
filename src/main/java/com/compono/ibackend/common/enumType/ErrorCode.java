@@ -17,8 +17,8 @@ public enum ErrorCode {
     INVALID_EVENTDATETIME(4007, "유효한지 않은 EventDateTime 값입니다."),
     DUPLICATED_FAILED(4008, "이미 데이터가 존재합니다."),
     NOT_FOUND_USER_ID(4009, "유저 ID가 존재하지 않습니다."),
-    NOT_FOUND_SCHEDULE(4015,"스케쥴이 존재하지 않습니다."),
-    NOT_FOUND_SCHEDULE_TIME(4016,"스케쥴 시간이 존재하지 않습니다."),
+    NOT_FOUND_SCHEDULE(4015, "스케쥴이 존재하지 않습니다."),
+    NOT_FOUND_SCHEDULE_TIME(4016, "스케쥴 시간이 존재하지 않습니다."),
 
     // 401
     EXPIRED_TOKEN(4010, "만료된 토큰입니다."),
