@@ -4,12 +4,15 @@ import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.schedule.dto.request.ScheduleRequest;
+import com.compono.ibackend.schedule.dto.response.ScheduleDetailResponse;
 import com.compono.ibackend.schedule.dto.response.ScheduleResponse;
 import com.compono.ibackend.schedule.enumType.RoutinePeriod;
 import com.compono.ibackend.schedule.repository.ScheduleRepository;
 import com.compono.ibackend.tag.domain.Tag;
 import com.compono.ibackend.tag.service.TagScheduleService;
 import com.compono.ibackend.tag.service.TagService;
+import com.compono.ibackend.user.domain.User;
+import com.compono.ibackend.user.service.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ public class ScheduleService {
     private final PointService pointService;
     private final TagService tagService;
     private final TagScheduleService tagScheduleService;
+    private final UserService userService;
 
     /***
      * 스케줄 저장하는 함수
@@ -32,9 +36,10 @@ public class ScheduleService {
      * @return
      */
     @Transactional
-    public ScheduleResponse addSchedule(ScheduleRequest scheduleRequest) {
+    public ScheduleResponse addSchedule(String email, ScheduleRequest scheduleRequest) {
         try {
             // 1. 유효성 검사
+            User user = userService.findUserByEmail(email);
             if (!validateScheduleRequest(scheduleRequest)) {
                 throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_SCHEDULE);
             }
@@ -46,7 +51,7 @@ public class ScheduleService {
             }
 
             // 3. Schedule 저장
-            Schedule schedule = scheduleRequest.toEntity();
+            Schedule schedule = scheduleRequest.toEntity(user);
             scheduleRepository.save(schedule);
 
             // 4. Point 저장 및 Schedule과 연관관계 연결
@@ -78,5 +83,19 @@ public class ScheduleService {
         }
 
         return true;
+    }
+
+    /**
+     * 스케줄 단일 조회 함수
+     *
+     * @param scheduleId
+     * @return
+     */
+    public ScheduleDetailResponse findScheduleById(String email, Long scheduleId) {
+        // 1. 사용자에게 등록된 스케줄인지 확인
+        User user = userService.findUserByEmail(email);
+
+        // 2. 조회
+        return null;
     }
 }
