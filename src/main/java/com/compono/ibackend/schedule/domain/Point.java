@@ -19,10 +19,15 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "`point`")
 public class Point {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private Schedule schedule;
 
     @Column(name = "longitude", nullable = false)
     private Double longitude;
@@ -30,7 +35,15 @@ public class Point {
     @Column(name = "latitude", nullable = false)
     private Double latitude;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private Schedule schedule;
+    public Point(Schedule schedule, double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+
+        this.setSchedule(schedule);
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+        schedule.setPoint(this);
+    }
 }

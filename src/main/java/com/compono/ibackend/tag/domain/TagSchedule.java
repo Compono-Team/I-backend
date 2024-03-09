@@ -31,4 +31,19 @@ public class TagSchedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
+    public TagSchedule(Tag tag, Schedule schedule) {
+        this.setTag(tag);
+        this.setSchedule(schedule);
+    }
+
+    private void setTag(Tag tag) {
+        this.tag = tag;
+        tag.getTagSchedules().add(this);
+    }
+
+    private void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+        schedule.getTagSchedules().add(this);
+    }
 }
