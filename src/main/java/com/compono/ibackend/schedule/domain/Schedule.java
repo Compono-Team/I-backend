@@ -41,7 +41,7 @@ public class Schedule {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id") // nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "task_name", nullable = false, length = 100)
@@ -84,6 +84,7 @@ public class Schedule {
     private List<TagSchedule> tagSchedules = new ArrayList<>();
 
     public Schedule(
+            User user,
             String taskName,
             SchedulePriority priority,
             LocalDateTime startDate,
@@ -91,6 +92,7 @@ public class Schedule {
             boolean isRoutine,
             RoutinePeriod routinePeriod,
             boolean isMarked) {
+        this.user = user;
         this.taskName = taskName;
         this.priority = priority;
         this.startDate = startDate;
