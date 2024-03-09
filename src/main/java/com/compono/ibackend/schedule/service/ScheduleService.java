@@ -33,32 +33,36 @@ public class ScheduleService {
      */
     @Transactional
     public ScheduleResponse addSchedule(ScheduleRequest scheduleRequest) {
-        // 1. 유효성 검사
-        if (!validateScheduleRequest(scheduleRequest)) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_SCHEDULE);
+        try {
+            // 1. 유효성 검사
+            if (!validateScheduleRequest(scheduleRequest)) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_SCHEDULE);
+            }
+
+            // 2. tag 존재 확인
+            List<Tag> tags = tagService.findAllTagById(scheduleRequest.tags());
+            if (tags.size() != scheduleRequest.tags().size()) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TAG_ID);
+            }
+
+            // 3. Schedule 저장
+            Schedule schedule = scheduleRequest.toEntity();
+            scheduleRepository.save(schedule);
+
+            // 4. Point 저장 및 Schedule과 연관관계 연결
+            pointService.addPoint(schedule, scheduleRequest.point());
+
+            // 5. tag 연관관계 연결
+            tagScheduleService.addTagSchedule(tags, schedule);
+
+            return ScheduleResponse.from(schedule);
+        } catch (Exception ex) {
+            throw new CustomException(ex);
         }
-
-        // 2. tag 존재 확인
-        List<Tag> tags = tagService.findAllTagById(scheduleRequest.tags());
-        if (tags.size() != scheduleRequest.tags().size()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TAG_ID);
-        }
-
-        // 3. Schedule 저장
-        Schedule schedule = scheduleRequest.toEntity();
-        scheduleRepository.save(schedule);
-
-        // 4. Point 저장 및 Schedule과 연관관계 연결
-        pointService.addPoint(schedule, scheduleRequest.point());
-
-        // 5. tag 연관관계 연결
-        tagScheduleService.addTagSchedule(tags, schedule);
-
-        return ScheduleResponse.from(schedule);
     }
 
     /**
-     * scheduleRequest의 유효성 검사를 함는 함수
+     * scheduleRequest 유효성 검사 함수
      *
      * @param scheduleRequest
      */
