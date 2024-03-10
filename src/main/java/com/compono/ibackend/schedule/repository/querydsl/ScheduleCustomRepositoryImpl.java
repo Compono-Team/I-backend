@@ -5,12 +5,12 @@ import com.compono.ibackend.schedule.domain.QSchedule;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.schedule.dto.response.ScheduleDetailPointResponse;
 import com.compono.ibackend.schedule.dto.response.ScheduleDetailResponse;
-import com.compono.ibackend.schedule.dto.response.ScheduleDetailTagResponse;
+import com.compono.ibackend.schedule.dto.response.ScheduleDetailWithTagResponse;
+import com.compono.ibackend.schedule.dto.response.TagDetailResponse;
 import com.compono.ibackend.tag.domain.QTag;
 import com.compono.ibackend.tag.domain.QTagSchedule;
 import com.compono.ibackend.user.domain.User;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -23,7 +23,8 @@ public class ScheduleCustomRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public ScheduleDetailResponse findScheduleByUserAndScheduleId(User user, Long scheduleId) {
+    public ScheduleDetailWithTagResponse findScheduleByUserAndScheduleId(
+            User user, Long scheduleId) {
         QSchedule qSchedule = QSchedule.schedule;
         QTagSchedule qTagSchedule = QTagSchedule.tagSchedule;
         QTag qTag = QTag.tag;
@@ -34,38 +35,37 @@ public class ScheduleCustomRepositoryImpl extends QuerydslRepositorySupport
         booleanBuilder.and(qSchedule.id.eq(scheduleId));
         booleanBuilder.and(qSchedule.isDeleted.eq(false));
 
-        List<ScheduleDetailResponse> data =
+        ScheduleDetailResponse schedule =
                 from(qSchedule)
-                        .leftJoin(qSchedule.tagSchedules, qTagSchedule)
-                        .leftJoin(qTagSchedule.tag, qTag)
+                        .select(
+                                Projections.constructor(
+                                        ScheduleDetailResponse.class,
+                                        qSchedule.id,
+                                        qSchedule.taskName,
+                                        qSchedule.priority,
+                                        qSchedule.startDate,
+                                        qSchedule.endDate,
+                                        Projections.constructor(
+                                                ScheduleDetailPointResponse.class,
+                                                qPoint.longitude,
+                                                qPoint.latitude),
+                                        qSchedule.isRoutine,
+                                        qSchedule.routinePeriod,
+                                        qSchedule.isMarked))
                         .leftJoin(qSchedule.point, qPoint)
                         .where(booleanBuilder)
-                        .transform(
-                                GroupBy.groupBy(qSchedule.id, qTag.id)
-                                        .list(
-                                                Projections.constructor(
-                                                        ScheduleDetailResponse.class,
-                                                        qSchedule.id,
-                                                        qSchedule.taskName,
-                                                        qSchedule.priority,
-                                                        qSchedule.startDate,
-                                                        qSchedule.endDate,
-                                                        Projections.constructor(
-                                                                ScheduleDetailPointResponse.class,
-                                                                qPoint.longitude,
-                                                                qPoint.latitude),
-                                                        qSchedule.isRoutine,
-                                                        qSchedule.routinePeriod,
-                                                        qSchedule.isMarked,
-                                                        GroupBy.list(
-                                                                Projections.list(
-                                                                        Projections.constructor(
-                                                                                ScheduleDetailTagResponse
-                                                                                        .class,
-                                                                                qTag.id,
-                                                                                qTag.name,
-                                                                                qTag.color))))));
+                        .fetchOne();
 
-        return data.get(0);
+        List<TagDetailResponse> tags =
+                from(qTag)
+                        .select(
+                                Projections.constructor(
+                                        TagDetailResponse.class, qTag.id, qTag.name, qTag.color))
+                        .leftJoin(qTagSchedule)
+                        .on(qTagSchedule.schedule.id.eq(scheduleId))
+                        .where(qTagSchedule.tag.eq(qTag))
+                        .fetch();
+
+        return ScheduleDetailWithTagResponse.from(schedule, tags);
     }
 }

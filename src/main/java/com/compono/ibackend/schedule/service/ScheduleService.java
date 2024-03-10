@@ -4,7 +4,7 @@ import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.schedule.dto.request.ScheduleRequest;
-import com.compono.ibackend.schedule.dto.response.ScheduleDetailResponse;
+import com.compono.ibackend.schedule.dto.response.ScheduleDetailWithTagResponse;
 import com.compono.ibackend.schedule.dto.response.ScheduleResponse;
 import com.compono.ibackend.schedule.enumType.RoutinePeriod;
 import com.compono.ibackend.schedule.repository.ScheduleRepository;
@@ -91,11 +91,11 @@ public class ScheduleService {
      * @param scheduleId
      * @return
      */
-    public ScheduleDetailResponse findScheduleById(String email, Long scheduleId) {
+    public ScheduleDetailWithTagResponse findScheduleById(String email, Long scheduleId) {
         User user = userService.findUserByEmail(email);
 
         // 1. 조회
-        ScheduleDetailResponse scheduleResponse =
+        ScheduleDetailWithTagResponse scheduleResponse =
                 scheduleRepository.findScheduleByUserAndScheduleId(user, scheduleId);
         if (scheduleResponse == null) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID);
