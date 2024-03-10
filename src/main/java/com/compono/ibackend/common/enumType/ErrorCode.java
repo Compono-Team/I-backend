@@ -19,6 +19,8 @@ public enum ErrorCode {
     NOT_FOUND_USER_ID(4009, "유저 ID가 존재하지 않습니다."),
     INVALID_SCHEDULE(4010, "유효하지 않은 스케줄 데이터 값입니다."),
     NOT_FOUND_TAG_ID(4011, "요청한 tag id가 존재하지 않습니다."),
+    NOT_FOUND_USER_EMAIL(4012, "요청한 user email이 존재하지 않습니다."),
+    NOT_FOUND_SCHEDULE_ID(4012, "요청한 schedule id이 존재하지 않습니다."),
 
     // 401
     EXPIRED_TOKEN(4010, "만료된 토큰입니다."),
