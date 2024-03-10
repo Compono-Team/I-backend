@@ -111,4 +111,8 @@ public class Schedule {
     public void setPoint(Point point) {
         this.point = point;
     }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

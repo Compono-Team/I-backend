@@ -102,4 +102,37 @@ public class ScheduleService {
         }
         return scheduleResponse;
     }
+
+    /**
+     * 스케줄 삭제 함수
+     *
+     * @param scheduleId
+     * @return
+     */
+    @Transactional
+    public void deleteSchedule(String email, Long scheduleId) {
+        User user = userService.findUserByEmail(email);
+
+        Schedule schedule = findScheduleById(scheduleId);
+        if (schedule.getUser() == user) {
+            schedule.setIsDeleted(true);
+        } else {
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID);
+        }
+    }
+
+    /**
+     * scheduleId로 Schedule 조회하는 함수
+     *
+     * @param scheduleId
+     * @return
+     */
+    public Schedule findScheduleById(Long scheduleId) {
+        return scheduleRepository
+                .findById(scheduleId)
+                .orElseThrow(
+                        () ->
+                                new CustomException(
+                                        HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID));
+    }
 }
