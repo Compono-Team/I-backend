@@ -76,6 +76,9 @@ public class Schedule {
     @Column(name = "is_marked", nullable = false)
     private Boolean isMarked;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+
     @OneToMany(
             mappedBy = "schedule",
             cascade = CascadeType.ALL,
@@ -101,6 +104,7 @@ public class Schedule {
         this.routinePeriod = routinePeriod;
         this.isMarked = isMarked;
 
+        this.isDeleted = false;
         this.taskStatus = TaskStatus.IN_PROGRESS;
     }
 

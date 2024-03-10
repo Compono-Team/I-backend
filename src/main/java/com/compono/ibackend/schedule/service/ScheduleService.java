@@ -92,10 +92,14 @@ public class ScheduleService {
      * @return
      */
     public ScheduleDetailResponse findScheduleById(String email, Long scheduleId) {
-        // 1. 사용자에게 등록된 스케줄인지 확인
         User user = userService.findUserByEmail(email);
 
-        // 2. 조회
-        return null;
+        // 1. 조회
+        ScheduleDetailResponse scheduleResponse =
+                scheduleRepository.findScheduleByUserAndScheduleId(user, scheduleId);
+        if (scheduleResponse == null) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID);
+        }
+        return scheduleResponse;
     }
 }
