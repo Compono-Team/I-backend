@@ -3,7 +3,6 @@ package com.compono.ibackend.schedule.dto.response;
 import com.compono.ibackend.schedule.enumType.RoutinePeriod;
 import com.compono.ibackend.schedule.enumType.SchedulePriority;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public record ScheduleDetailResponse(
         Long id,
@@ -14,5 +13,4 @@ public record ScheduleDetailResponse(
         ScheduleDetailPointResponse point,
         Boolean isRoutine,
         RoutinePeriod routinePeriod,
-        Boolean isMarked,
-        List<ScheduleDetailTagResponse> tags) {}
+        Boolean isMarked) {}

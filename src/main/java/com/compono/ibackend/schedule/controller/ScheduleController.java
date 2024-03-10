@@ -3,6 +3,7 @@ package com.compono.ibackend.schedule.controller;
 import com.compono.ibackend.common.security.impl.UserDetailsImpl;
 import com.compono.ibackend.schedule.dto.request.ScheduleRequest;
 import com.compono.ibackend.schedule.dto.response.ScheduleDetailResponse;
+import com.compono.ibackend.schedule.dto.response.ScheduleDetailWithTagResponse;
 import com.compono.ibackend.schedule.dto.response.ScheduleResponse;
 import com.compono.ibackend.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
@@ -45,7 +46,7 @@ public class ScheduleController {
      * @return
      */
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleDetailResponse> getSchedule(
+    public ResponseEntity<ScheduleDetailWithTagResponse> getSchedule(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "scheduleId") Long scheduleId) {
         return ResponseEntity.ok()
