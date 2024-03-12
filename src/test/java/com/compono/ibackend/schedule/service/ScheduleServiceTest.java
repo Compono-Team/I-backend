@@ -101,25 +101,14 @@ public class ScheduleServiceTest {
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
         Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        ScheduleRequest scheduleRequest = createScheduleRequest(schedule, tags);
 
-        ScheduleRequest invalidRequest =
-                new ScheduleRequest(
-                        schedule.getTaskName(),
-                        schedule.getPriority(),
-                        List.of(1L, 5L),
-                        schedule.getStartDate(),
-                        schedule.getEndDate(),
-                        new SchedulePointRequest(
-                                schedule.getPoint().getLongitude(),
-                                schedule.getPoint().getLatitude()),
-                        schedule.getIsRoutine(),
-                        schedule.getRoutinePeriod(),
-                        schedule.getIsMarked());
+        when(tagService.findAllTagById(scheduleRequest.tags())).thenReturn(tags.subList(0, 1));
 
         CustomException ex =
                 assertThrows(
                         CustomException.class,
-                        () -> scheduleService.addSchedule(EMAIL, invalidRequest));
+                        () -> scheduleService.addSchedule(EMAIL, scheduleRequest));
         assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_TAG_ID);
     }
 
