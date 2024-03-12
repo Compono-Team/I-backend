@@ -42,6 +42,10 @@ public class Point {
         this.setSchedule(schedule);
     }
 
+    public static Point of(Schedule schedule, double longitude, double latitude) {
+        return new Point(schedule, longitude, latitude);
+    }
+
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
         schedule.setPoint(this);
