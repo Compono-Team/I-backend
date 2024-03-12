@@ -49,7 +49,7 @@ public class ScheduleController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "scheduleId") Long scheduleId) {
         return ResponseEntity.ok()
-                .body(scheduleService.findScheduleById(userDetails.getEmail(), scheduleId));
+                .body(scheduleService.findScheduleDetailById(userDetails.getEmail(), scheduleId));
     }
 
     /**

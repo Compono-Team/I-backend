@@ -58,7 +58,7 @@ class UserServiceTest {
         assertEquals("", user, foundUser);
     }
 
-    @DisplayName("[오류 케이스 - NOT_FOUND_USER_EMAIL] 스케쥴 생성하지 못 한다.")
+    @DisplayName("[오류 케이스 - NOT_FOUND_USER_EMAIL] email에 대한 User를 조회한다.")
     @Test
     void findUserByEmail_notFoundUserEmail() {
         String email = "test@gmail.com";

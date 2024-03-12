@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("[비즈니스 로직] - 태그")
 @ExtendWith(MockitoExtension.class)
-public class TagServiceTest {
+class TagServiceTest {
 
     @InjectMocks private TagService tagService;
     @Mock private TagRepository tagRepository;
