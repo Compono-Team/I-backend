@@ -37,4 +37,13 @@ public class Tag {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
     private List<TagSchedule> tagSchedules = new ArrayList<>();
+
+    public Tag(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
+
+    public static Tag from(String name, String color) {
+        return new Tag(name, color);
+    }
 }

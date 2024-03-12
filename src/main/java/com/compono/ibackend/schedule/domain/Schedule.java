@@ -108,6 +108,19 @@ public class Schedule {
         this.taskStatus = TaskStatus.IN_PROGRESS;
     }
 
+    public static Schedule of(
+            User user,
+            String taskName,
+            SchedulePriority priority,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            boolean isRoutine,
+            RoutinePeriod routinePeriod,
+            boolean isMarked) {
+        return new Schedule(
+                user, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
+    }
+
     public void setPoint(Point point) {
         this.point = point;
     }
