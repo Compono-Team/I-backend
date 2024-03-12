@@ -22,7 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("[비즈니스 로직] - 태그 스케줄")
 @ExtendWith(MockitoExtension.class)
-public class TagScheduleServiceTest {
+class TagScheduleServiceTest {
 
     private static final String EMAIL = "compono@test.com";
     @InjectMocks private TagScheduleService tagScheduleService;

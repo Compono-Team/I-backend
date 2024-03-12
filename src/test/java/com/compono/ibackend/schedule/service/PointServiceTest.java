@@ -25,7 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("[비즈니스 로직] - 포인트 (위치)")
 @ExtendWith(MockitoExtension.class)
-public class PointServiceTest {
+class PointServiceTest {
 
     private static final String EMAIL = "compono@test.com";
     @InjectMocks private PointService pointService;

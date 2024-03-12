@@ -173,7 +173,7 @@ class ScheduleControllerTest {
         ScheduleDetailWithTagResponse scheduleDetailResponse =
                 createScheduleDetailWithTagResponse(schedule, tags);
 
-        when(scheduleService.findScheduleById(EMAIL, 1L)).thenReturn(scheduleDetailResponse);
+        when(scheduleService.findScheduleDetailById(EMAIL, 1L)).thenReturn(scheduleDetailResponse);
 
         mvc.perform(
                         RestDocumentationRequestBuilders.get("/api/v1/schedule/{scheduleId}", 1)

@@ -89,7 +89,7 @@ public class ScheduleService {
      * @param scheduleId
      * @return
      */
-    public ScheduleDetailWithTagResponse findScheduleById(String email, Long scheduleId) {
+    public ScheduleDetailWithTagResponse findScheduleDetailById(String email, Long scheduleId) {
         User user = userService.findUserByEmail(email);
 
         // 1. 조회
@@ -111,7 +111,7 @@ public class ScheduleService {
     public boolean deleteSchedule(String email, Long scheduleId) {
         User user = userService.findUserByEmail(email);
 
-        Schedule schedule = findScheduleById(scheduleId);
+        Schedule schedule = findScheduleDetailById(scheduleId);
         if (schedule.getUser() == user) {
             schedule.setIsDeleted(true);
         } else {
@@ -128,7 +128,7 @@ public class ScheduleService {
      * @param scheduleId
      * @return
      */
-    public Schedule findScheduleById(Long scheduleId) {
+    public Schedule findScheduleDetailById(Long scheduleId) {
         return scheduleRepository
                 .findById(scheduleId)
                 .orElseThrow(
