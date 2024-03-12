@@ -3,8 +3,11 @@ package com.compono.ibackend.schedule.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.compono.ibackend.common.enumType.ErrorCode;
@@ -161,7 +164,45 @@ class ScheduleServiceTest {
         assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
     }
 
-    @DisplayName("[정상 케이스] id에 대한 Schedule 를 조회한다.")
+    @DisplayName("[정상 케이스] 스케줄을 삭제한다.")
+    @Test
+    void deleteSchedule() {
+        List<Tag> tags = TagFactory.createTags();
+        User user = createUser();
+        ReflectionTestUtils.setField(user, "id", 1L);
+        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+
+        when(userService.findUserByEmail(EMAIL)).thenReturn(user);
+        when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
+
+        boolean result = scheduleService.deleteSchedule(EMAIL, schedule.getId());
+
+        assertTrue(result);
+        assertTrue(schedule.getIsDeleted());
+        verify(scheduleRepository, times(1)).save(schedule);
+    }
+
+    @DisplayName("[오류 케이스 - NOT_FOUND_SCHEDULE_ID] 스케줄을 삭제하지 못 한다.")
+    @Test
+    void deleteSchedule_notFoundScheduleId() {
+        List<Tag> tags = TagFactory.createTags();
+        User user = createUser();
+        ReflectionTestUtils.setField(user, "id", 1L);
+        User another = createUser("another@test.com");
+        ReflectionTestUtils.setField(another, "id", 2L);
+        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+
+        when(userService.findUserByEmail(another.getEmail())).thenReturn(another);
+        when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
+
+        CustomException ex =
+                assertThrows(
+                        CustomException.class,
+                        () -> scheduleService.deleteSchedule(another.getEmail(), schedule.getId()));
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
+    }
+
+    @DisplayName("[정상 케이스] id에 대한 스케줄를 조회한다.")
     @Test
     void findScheduleById() {
         List<Tag> tags = TagFactory.createTags();
@@ -177,7 +218,7 @@ class ScheduleServiceTest {
         assertThat(schedule.equals(foundSchedule));
     }
 
-    @DisplayName("[오류 케이스 - NOT_FOUND_SCHEDULE_ID] id에 대한 Schedule 를 조회하지 못 한다.")
+    @DisplayName("[오류 케이스 - NOT_FOUND_SCHEDULE_ID] id에 대한 스케줄를 조회하지 못 한다.")
     @Test
     void findScheduleById_notFoundScheduleId() {
         List<Tag> tags = TagFactory.createTags();
@@ -197,6 +238,12 @@ class ScheduleServiceTest {
     public User createUser() {
         UserAddRequest request =
                 new UserAddRequest(EMAIL, "test", OauthProvider.GOOGLE, null, true);
+        return User.from(request);
+    }
+
+    public User createUser(String email) {
+        UserAddRequest request =
+                new UserAddRequest(email, "test", OauthProvider.GOOGLE, null, true);
         return User.from(request);
     }
 
