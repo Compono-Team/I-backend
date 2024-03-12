@@ -22,8 +22,8 @@ public class PointService {
      * @param schedulePointRequest
      */
     @Transactional
-    public void addPoint(Schedule schedule, SchedulePointRequest schedulePointRequest) {
+    public Point addPoint(Schedule schedule, SchedulePointRequest schedulePointRequest) {
         Point point = schedulePointRequest.toEntity(schedule);
-        pointRepository.save(point);
+        return pointRepository.save(point);
     }
 }
