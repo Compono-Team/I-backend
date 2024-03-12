@@ -35,4 +35,50 @@ public class ScheduleFactory {
 
         return schedule;
     }
+
+    public static Schedule createInvaildDateSchedule(User user, List<Tag> tags) {
+        Schedule schedule =
+                Schedule.of(
+                        user,
+                        "알고리즘풀기",
+                        SchedulePriority.P1,
+                        null,
+                        null,
+                        true,
+                        RoutinePeriod.EVERYDAY,
+                        true);
+        ReflectionTestUtils.setField(schedule, "id", 1L);
+
+        Point.of(schedule, 36.15, 105.456);
+
+        tags.forEach(
+                tag -> {
+                    new TagSchedule(tag, schedule);
+                });
+
+        return schedule;
+    }
+
+    public static Schedule createInvaildPeriodSchedule(User user, List<Tag> tags) {
+        Schedule schedule =
+                Schedule.of(
+                        user,
+                        "알고리즘풀기",
+                        SchedulePriority.P1,
+                        LocalDateTime.now().plusDays(1),
+                        LocalDateTime.now().plusDays(1).plusHours(1),
+                        true,
+                        RoutinePeriod.NONE,
+                        true);
+        ReflectionTestUtils.setField(schedule, "id", 1L);
+
+        Point.of(schedule, 36.15, 105.456);
+
+        tags.forEach(
+                tag -> {
+                    new TagSchedule(tag, schedule);
+                });
+
+        return schedule;
+    }
 }
