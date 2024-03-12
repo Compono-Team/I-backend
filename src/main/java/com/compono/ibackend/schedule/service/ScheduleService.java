@@ -111,7 +111,7 @@ public class ScheduleService {
     public boolean deleteSchedule(String email, Long scheduleId) {
         User user = userService.findUserByEmail(email);
 
-        Schedule schedule = findScheduleDetailById(scheduleId);
+        Schedule schedule = findScheduleById(scheduleId);
         if (schedule.getUser() == user) {
             schedule.setIsDeleted(true);
         } else {
@@ -128,7 +128,7 @@ public class ScheduleService {
      * @param scheduleId
      * @return
      */
-    public Schedule findScheduleDetailById(Long scheduleId) {
+    public Schedule findScheduleById(Long scheduleId) {
         return scheduleRepository
                 .findById(scheduleId)
                 .orElseThrow(
