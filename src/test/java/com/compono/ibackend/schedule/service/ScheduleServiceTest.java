@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.compono.ibackend.common.enumType.ErrorCode;
@@ -26,6 +27,8 @@ import com.compono.ibackend.user.dto.request.UserAddRequest;
 import com.compono.ibackend.user.enumType.OauthProvider;
 import com.compono.ibackend.user.service.UserService;
 import java.util.List;
+import java.util.Optional;
+import org.hibernate.validator.internal.util.Contracts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +39,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("[비즈니스 로직] - 스케줄")
 @ExtendWith(MockitoExtension.class)
-public class ScheduleServiceTest {
+class ScheduleServiceTest {
 
     private static final String EMAIL = "compono@test.com";
     @InjectMocks private ScheduleService scheduleService;
@@ -118,7 +121,7 @@ public class ScheduleServiceTest {
 
     @DisplayName("[정상 케이스] id로 스케쥴 단일 조회를 한다.")
     @Test()
-    void findScheduleById() {
+    void findScheduleDetailById() {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
@@ -131,15 +134,15 @@ public class ScheduleServiceTest {
                 .thenReturn(scheduleDetailResponse);
 
         ScheduleDetailWithTagResponse foundResponse =
-                scheduleService.findScheduleById(user.getEmail(), schedule.getId());
+                scheduleService.findScheduleDetailById(user.getEmail(), schedule.getId());
 
         assertNotNull(foundResponse);
         assertThat(scheduleDetailResponse.equals(foundResponse));
     }
 
-    @DisplayName("[오류 케이 - NOT_FOUND_SCHEDULE_ID] id로 스케쥴 단일 조회를 할 수 없다")
+    @DisplayName("[오류 케이스 - NOT_FOUND_SCHEDULE_ID] id로 스케쥴 단일 조회를 할 수 없다")
     @Test()
-    void findScheduleById_notFoundScheduleId() {
+    void findScheduleDetailById_notFoundScheduleId() {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
@@ -152,7 +155,42 @@ public class ScheduleServiceTest {
         CustomException ex =
                 assertThrows(
                         CustomException.class,
-                        () -> scheduleService.findScheduleById(user.getEmail(), schedule.getId()));
+                        () ->
+                                scheduleService.findScheduleDetailById(
+                                        user.getEmail(), schedule.getId()));
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
+    }
+
+    @DisplayName("[정상 케이스] id에 대한 Schedule 를 조회한다.")
+    @Test
+    void findScheduleById() {
+        List<Tag> tags = TagFactory.createTags();
+        User user = createUser();
+        ReflectionTestUtils.setField(user, "id", 1L);
+        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+
+        when(scheduleRepository.findById(anyLong())).thenReturn(Optional.of(schedule));
+
+        Schedule foundSchedule = scheduleService.findScheduleById(schedule.getId());
+
+        Contracts.assertNotNull(foundSchedule);
+        assertThat(schedule.equals(foundSchedule));
+    }
+
+    @DisplayName("[오류 케이스 - NOT_FOUND_SCHEDULE_ID] id에 대한 Schedule 를 조회하지 못 한다.")
+    @Test
+    void findScheduleById_notFoundScheduleId() {
+        List<Tag> tags = TagFactory.createTags();
+        User user = createUser();
+        ReflectionTestUtils.setField(user, "id", 1L);
+        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+
+        when(scheduleRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        CustomException ex =
+                assertThrows(
+                        CustomException.class,
+                        () -> scheduleService.findScheduleById(schedule.getId()));
         assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
     }
 
