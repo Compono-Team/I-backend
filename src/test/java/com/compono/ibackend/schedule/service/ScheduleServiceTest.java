@@ -1,6 +1,7 @@
 package com.compono.ibackend.schedule.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -12,7 +13,10 @@ import com.compono.ibackend.factory.TagFactory;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.schedule.dto.request.SchedulePointRequest;
 import com.compono.ibackend.schedule.dto.request.ScheduleRequest;
+import com.compono.ibackend.schedule.dto.response.ScheduleDetailResponse;
+import com.compono.ibackend.schedule.dto.response.ScheduleDetailWithTagResponse;
 import com.compono.ibackend.schedule.dto.response.ScheduleResponse;
+import com.compono.ibackend.schedule.dto.response.TagDetailResponse;
 import com.compono.ibackend.schedule.repository.ScheduleRepository;
 import com.compono.ibackend.tag.domain.Tag;
 import com.compono.ibackend.tag.service.TagScheduleService;
@@ -37,15 +41,15 @@ public class ScheduleServiceTest {
     private static final String EMAIL = "compono@test.com";
     @InjectMocks private ScheduleService scheduleService;
     @Mock private ScheduleRepository scheduleRepository;
-    @Mock private PointService pointService;
     @Mock private TagService tagService;
-    @Mock private TagScheduleService tagScheduleService;
     @Mock private UserService userService;
+    @Mock private PointService pointService;
+    @Mock private TagScheduleService tagScheduleService;
 
     @DisplayName("[정상 케이스] 스케쥴 생성한다.")
     @Test
     void addSchedule() {
-        List<Tag> tags = createTags();
+        List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
         Schedule schedule = ScheduleFactory.createSchedule(user, tags);
@@ -64,7 +68,7 @@ public class ScheduleServiceTest {
     @DisplayName("[오류 케이스 - INVALID_SCHEDULE] 스케쥴 생성하지 못 한다.")
     @Test()
     void addSchedule_invalidSchedule() {
-        List<Tag> tags = createTags();
+        List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
 
@@ -97,7 +101,7 @@ public class ScheduleServiceTest {
     @DisplayName("[오류 케이스 - NOT_FOUND_TAG_ID] 스케쥴 생성하지 못 한다.")
     @Test()
     void addSchedule_notFoundTagId() {
-        List<Tag> tags = createTags();
+        List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
         Schedule schedule = ScheduleFactory.createSchedule(user, tags);
@@ -112,19 +116,50 @@ public class ScheduleServiceTest {
         assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_TAG_ID);
     }
 
+    @DisplayName("[정상 케이스] id로 스케쥴 단일 조회를 한다.")
+    @Test()
+    void findScheduleById() {
+        List<Tag> tags = TagFactory.createTags();
+        User user = createUser();
+        ReflectionTestUtils.setField(user, "id", 1L);
+        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        ScheduleDetailWithTagResponse scheduleDetailResponse =
+                createScheduleDetailWithTagResponse(schedule, tags);
+
+        when(userService.findUserByEmail(EMAIL)).thenReturn(user);
+        when(scheduleRepository.findScheduleByUserAndScheduleId(user, schedule.getId()))
+                .thenReturn(scheduleDetailResponse);
+
+        ScheduleDetailWithTagResponse foundResponse =
+                scheduleService.findScheduleById(user.getEmail(), schedule.getId());
+
+        assertNotNull(foundResponse);
+        assertThat(scheduleDetailResponse.equals(foundResponse));
+    }
+
+    @DisplayName("[오류 케이 - NOT_FOUND_SCHEDULE_ID] id로 스케쥴 단일 조회를 할 수 없다")
+    @Test()
+    void findScheduleById_notFoundScheduleId() {
+        List<Tag> tags = TagFactory.createTags();
+        User user = createUser();
+        ReflectionTestUtils.setField(user, "id", 1L);
+        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+
+        when(userService.findUserByEmail(EMAIL)).thenReturn(user);
+        when(scheduleRepository.findScheduleByUserAndScheduleId(user, schedule.getId()))
+                .thenReturn(null);
+
+        CustomException ex =
+                assertThrows(
+                        CustomException.class,
+                        () -> scheduleService.findScheduleById(user.getEmail(), schedule.getId()));
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
+    }
+
     public User createUser() {
         UserAddRequest request =
                 new UserAddRequest(EMAIL, "test", OauthProvider.GOOGLE, null, true);
         return User.from(request);
-    }
-
-    public List<Tag> createTags() {
-        Tag tag1 = TagFactory.createTag("공부");
-        Tag tag2 = TagFactory.createTag("자기계발");
-        ReflectionTestUtils.setField(tag1, "id", 1L);
-        ReflectionTestUtils.setField(tag2, "id", 2L);
-
-        return List.of(tag1, tag2);
     }
 
     public ScheduleRequest createScheduleRequest(Schedule schedule, List<Tag> tags) {
@@ -139,5 +174,19 @@ public class ScheduleServiceTest {
                 schedule.getIsRoutine(),
                 schedule.getRoutinePeriod(),
                 schedule.getIsMarked());
+    }
+
+    public ScheduleDetailWithTagResponse createScheduleDetailWithTagResponse(
+            Schedule schedule, List<Tag> tags) {
+        ScheduleDetailResponse scheduleDetailResponse = ScheduleDetailResponse.of(schedule);
+
+        List<TagDetailResponse> tagDetailResponses =
+                tags.stream()
+                        .map(
+                                tag ->
+                                        new TagDetailResponse(
+                                                tag.getId(), tag.getName(), tag.getColor()))
+                        .toList();
+        return new ScheduleDetailWithTagResponse(scheduleDetailResponse, tagDetailResponses);
     }
 }
