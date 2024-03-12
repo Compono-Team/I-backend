@@ -59,7 +59,7 @@ public class ScheduleFactory {
         return schedule;
     }
 
-    public static Schedule createInvaildPeriodSchedule(User user, List<Tag> tags) {
+    public static Schedule createInvaildRoutineSchedule(User user, List<Tag> tags) {
         Schedule schedule =
                 Schedule.of(
                         user,
@@ -69,6 +69,29 @@ public class ScheduleFactory {
                         LocalDateTime.now().plusDays(1).plusHours(1),
                         true,
                         RoutinePeriod.NONE,
+                        true);
+        ReflectionTestUtils.setField(schedule, "id", 1L);
+
+        Point.of(schedule, 36.15, 105.456);
+
+        tags.forEach(
+                tag -> {
+                    new TagSchedule(tag, schedule);
+                });
+
+        return schedule;
+    }
+
+    public static Schedule createInvaildNotRoutineSchedule(User user, List<Tag> tags) {
+        Schedule schedule =
+                Schedule.of(
+                        user,
+                        "알고리즘풀기",
+                        SchedulePriority.P1,
+                        LocalDateTime.now().plusDays(1),
+                        LocalDateTime.now().plusDays(1).plusHours(1),
+                        false,
+                        RoutinePeriod.TUESDAY,
                         true);
         ReflectionTestUtils.setField(schedule, "id", 1L);
 

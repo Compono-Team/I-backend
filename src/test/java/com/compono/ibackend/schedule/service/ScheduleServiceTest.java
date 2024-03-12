@@ -71,8 +71,12 @@ public class ScheduleServiceTest {
         Schedule invalidDateSchedule = ScheduleFactory.createInvaildDateSchedule(user, tags);
         ScheduleRequest request1 = createScheduleRequest(invalidDateSchedule, tags);
 
-        Schedule invaildPeriodSchedule = ScheduleFactory.createInvaildPeriodSchedule(user, tags);
-        ScheduleRequest request2 = createScheduleRequest(invaildPeriodSchedule, tags);
+        Schedule invaildRoutineSchedule = ScheduleFactory.createInvaildRoutineSchedule(user, tags);
+        ScheduleRequest request2 = createScheduleRequest(invaildRoutineSchedule, tags);
+
+        Schedule invaildNotRoutineSchedule =
+                ScheduleFactory.createInvaildNotRoutineSchedule(user, tags);
+        ScheduleRequest request3 = createScheduleRequest(invaildNotRoutineSchedule, tags);
 
         CustomException ex1 =
                 assertThrows(
@@ -83,6 +87,11 @@ public class ScheduleServiceTest {
                 assertThrows(
                         CustomException.class, () -> scheduleService.addSchedule(EMAIL, request2));
         assertThat(ex2.getErrorCode()).isEqualTo(ErrorCode.INVALID_SCHEDULE);
+
+        CustomException ex3 =
+                assertThrows(
+                        CustomException.class, () -> scheduleService.addSchedule(EMAIL, request3));
+        assertThat(ex3.getErrorCode()).isEqualTo(ErrorCode.INVALID_SCHEDULE);
     }
 
     @DisplayName("[오류 케이스 - NOT_FOUND_TAG_ID] 스케쥴 생성하지 못 한다.")
