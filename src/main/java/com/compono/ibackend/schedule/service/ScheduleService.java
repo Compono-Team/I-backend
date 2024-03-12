@@ -40,9 +40,7 @@ public class ScheduleService {
         try {
             // 1. 유효성 검사
             User user = userService.findUserByEmail(email);
-            if (!validateScheduleRequest(scheduleRequest)) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_SCHEDULE);
-            }
+            validateScheduleRequest(scheduleRequest);
 
             // 2. tag 존재 확인
             List<Tag> tags = tagService.findAllTagById(scheduleRequest.tags());
