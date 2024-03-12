@@ -107,7 +107,8 @@ private excludedClassFilesForReport(classDirectories) {
                         "**/*GoogleCalendar*",
                         "**/filter/**",
                         "**/security/**",
-                        "**/*OauthService*"
+                        "**/*OauthService*",
+                        "**/querydsl/**",
                 ])
             })
     )
