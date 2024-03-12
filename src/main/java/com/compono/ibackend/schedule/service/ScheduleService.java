@@ -71,7 +71,7 @@ public class ScheduleService {
      *
      * @param scheduleRequest
      */
-    private boolean validateScheduleRequest(ScheduleRequest scheduleRequest) {
+    public boolean validateScheduleRequest(ScheduleRequest scheduleRequest) {
         if (scheduleRequest.startDate() == null && scheduleRequest.endDate() == null) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_SCHEDULE);
         }
