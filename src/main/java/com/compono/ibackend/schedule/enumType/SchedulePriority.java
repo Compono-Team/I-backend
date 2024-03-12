@@ -1,5 +1,7 @@
 package com.compono.ibackend.schedule.enumType;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -10,4 +12,10 @@ public enum SchedulePriority {
 
     private final int code;
     private final String value;
+
+    public static String getAllType() {
+        return Arrays.stream(values())
+                .map(SchedulePriority::name)
+                .collect(Collectors.joining(" || "));
+    }
 }

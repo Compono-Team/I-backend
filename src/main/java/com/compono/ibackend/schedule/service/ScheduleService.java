@@ -110,7 +110,7 @@ public class ScheduleService {
      * @return
      */
     @Transactional
-    public void deleteSchedule(String email, Long scheduleId) {
+    public boolean deleteSchedule(String email, Long scheduleId) {
         User user = userService.findUserByEmail(email);
 
         Schedule schedule = findScheduleById(scheduleId);
@@ -119,6 +119,9 @@ public class ScheduleService {
         } else {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID);
         }
+
+        scheduleRepository.save(schedule);
+        return true;
     }
 
     /**
