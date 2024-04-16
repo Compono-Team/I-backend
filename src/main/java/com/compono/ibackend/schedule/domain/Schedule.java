@@ -4,7 +4,6 @@ import static lombok.AccessLevel.PROTECTED;
 
 import com.compono.ibackend.common.converter.TimestampConverter;
 import com.compono.ibackend.schedule.enumType.TaskStatus;
-import com.compono.ibackend.user.domain.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -15,11 +14,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-@Table(name = "`schedule_info`")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,8 +58,8 @@ public class Schedule {
     @Column(name = "schedule_order", nullable = false)
     private int order;
 
-    @Column(name = "is_marked", nullable = false)
-    private Boolean isMarked;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @OneToMany(
             mappedBy = "schedule",
@@ -73,9 +68,8 @@ public class Schedule {
             fetch = FetchType.LAZY)
     private List<ScheduleTime> scheduleTimes = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "is_marked", nullable = false)
+    private Boolean isMarked;
 
     public static Schedule of(
             String taskName,
@@ -86,7 +80,7 @@ public class Schedule {
             TaskStatus taskStatus,
             int order,
             Boolean isMarked,
-            User user) {
+            Long userId) {
         Schedule schedule = new Schedule();
         schedule.taskName = taskName;
         schedule.isRoutine = isRoutine;
@@ -96,7 +90,7 @@ public class Schedule {
         schedule.taskStatus = taskStatus;
         schedule.order = order;
         schedule.isMarked = isMarked;
-        schedule.user = user;
+        schedule.userId = userId;
         return schedule;
     }
 }
