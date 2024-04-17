@@ -1,4 +1,4 @@
-package com.compono.ibackend.common.annotation;
+package com.compono.ibackend.common;
 
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 

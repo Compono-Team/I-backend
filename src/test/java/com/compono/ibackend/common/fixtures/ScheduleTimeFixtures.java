@@ -6,15 +6,23 @@ import java.time.LocalDateTime;
 
 public class ScheduleTimeFixtures {
 
-    private static final LocalDateTime DATE_2024_03_22_12_00 =
-            LocalDateTime.of(2024, 3, 22, 12, 00);
-    private static final LocalDateTime DATE_2024_03_22_13_00 =
-            LocalDateTime.of(2024, 3, 22, 13, 00);
+    private static final LocalDateTime YEAR_2024_MONTH_04_DAY_17_HOUR_12_MIN_00_DATE =
+            LocalDateTime.of(2024, 4, 17, 12, 00);
+    private static final LocalDateTime YEAR_2024_MONTH_04_DAY_17_HOUR_13_MIN_00_DATE =
+            LocalDateTime.of(2024, 4, 17, 13, 00);
 
-    public static ScheduleTime DATE_2024_03_22_12_00_SCHEDULE_TIME(Schedule schedule) {
+    public static ScheduleTime YEAR_2024_MONTH_04_DAY_17_HOUR_12_AND_13_SCHEDULE_TIME(
+            Schedule schedule) {
         ScheduleTime scheduleTime = new ScheduleTime();
-        scheduleTime.setStartTime(DATE_2024_03_22_12_00);
-        scheduleTime.setStopTime(DATE_2024_03_22_13_00);
+        scheduleTime.setStartTime(YEAR_2024_MONTH_04_DAY_17_HOUR_12_MIN_00_DATE);
+        scheduleTime.setStopTime(YEAR_2024_MONTH_04_DAY_17_HOUR_13_MIN_00_DATE);
+        scheduleTime.setSchedule(schedule);
+        return scheduleTime;
+    }
+
+    public static ScheduleTime YEAR_2024_MONTH_04_DAY_17_HOUR_12_SCHEDULE_TIME(Schedule schedule) {
+        ScheduleTime scheduleTime = new ScheduleTime();
+        scheduleTime.setStartTime(YEAR_2024_MONTH_04_DAY_17_HOUR_12_MIN_00_DATE);
         scheduleTime.setSchedule(schedule);
         return scheduleTime;
     }

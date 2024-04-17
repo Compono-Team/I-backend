@@ -1,11 +1,10 @@
 package com.compono.ibackend.schedule.repository;
 
-import static com.compono.ibackend.common.fixtures.ScheduleFixtures.TODAY_AND_TOMORROW_SCHEDULE;
-import static com.compono.ibackend.common.fixtures.ScheduleFixtures.TODAY_SCHEDULE;
+import static com.compono.ibackend.common.fixtures.ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_AND_18_SCHEDULE;
+import static com.compono.ibackend.common.fixtures.ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_SCHEDULE;
 import static com.compono.ibackend.common.fixtures.UserFixtures.COMPONO_USER;
-import static org.junit.jupiter.api.Assertions.*;
 
-import com.compono.ibackend.common.annotation.RepositoryTest;
+import com.compono.ibackend.common.RepositoryTest;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.user.domain.User;
 import java.time.LocalDateTime;
@@ -20,14 +19,16 @@ class ScheduleRepositoryTest extends RepositoryTest {
 
     @Test
     void findByUserIdAndDateWithinRange() {
-        User MOCK_USER = testFixtureBuilder.buildUser(COMPONO_USER());
-        Long userId = MOCK_USER.getId();
+        User user = testFixtureBuilder.buildUser(COMPONO_USER());
+        Long userId = user.getId();
         List<Schedule> expectedSchedules =
                 testFixtureBuilder.buildSchedule(
-                        List.of(TODAY_AND_TOMORROW_SCHEDULE(userId), TODAY_SCHEDULE(userId)));
+                        List.of(
+                                YEAR_2024_MONTH_04_DAY_17_SCHEDULE(userId),
+                                YEAR_2024_MONTH_04_DAY_17_AND_18_SCHEDULE(userId)));
 
-        LocalDateTime todayStart = LocalDateTime.now().toLocalDate().atStartOfDay();
-        LocalDateTime todayEnd = todayStart.plusDays(1).minusSeconds(1);
+        LocalDateTime todayStart = LocalDateTime.of(2024, 4, 17, 00, 00);
+        LocalDateTime todayEnd = LocalDateTime.of(2024, 4, 17, 23, 59, 59);
 
         List<Schedule> actualSchedules =
                 scheduleRepository.findByUserIdAndDateWithinRange(userId, todayStart, todayEnd);

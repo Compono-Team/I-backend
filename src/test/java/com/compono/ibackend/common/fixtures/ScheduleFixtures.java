@@ -7,19 +7,26 @@ import java.time.LocalDateTime;
 public class ScheduleFixtures {
 
     public static final String MEMO = "memo for schedule";
-    public static final String TASK_NAME_ = "오늘 일정";
+    public static final String EXERCISE = "운동";
+    public static final String STUDY = "공부";
 
-    public static final LocalDateTime TODAY_DATE = LocalDateTime.now();
+    public static final LocalDateTime YEAR_2024_MONTH_04_DAY_17_HOUR_8_MIN_00_DATE =
+            LocalDateTime.of(2024, 04, 17, 8, 00);
+    public static final LocalDateTime YEAR_2024_MONTH_04_DAY_17_HOUR_13_MIN_00_DATE =
+            LocalDateTime.of(2024, 04, 17, 13, 00);
+
+    public static final LocalDateTime YEAR_2024_MONTH_04_DAY_18_HOUR_13_MIN_00_DATE =
+            LocalDateTime.of(2024, 04, 17, 13, 00);
     public static final LocalDateTime TODAY_PLUS_1_DATE = LocalDateTime.now().plusDays(1);
     public static final LocalDateTime TODAY_MINUS_1_DATE = LocalDateTime.now().minusDays(1);
 
-    public static Schedule TODAY_SCHEDULE(Long userId) {
+    public static Schedule YEAR_2024_MONTH_04_DAY_17_SCHEDULE(Long userId) {
         Schedule schedule =
                 Schedule.of(
-                        TASK_NAME_,
+                        EXERCISE,
                         false,
-                        TODAY_DATE,
-                        TODAY_DATE,
+                        YEAR_2024_MONTH_04_DAY_17_HOUR_8_MIN_00_DATE,
+                        YEAR_2024_MONTH_04_DAY_17_HOUR_13_MIN_00_DATE,
                         MEMO,
                         TaskStatus.IN_PROGRESS,
                         1,
@@ -29,29 +36,13 @@ public class ScheduleFixtures {
         return schedule;
     }
 
-    public static Schedule TODAY_AND_TOMORROW_SCHEDULE(Long userId) {
+    public static Schedule YEAR_2024_MONTH_04_DAY_17_AND_18_SCHEDULE(Long userId) {
         Schedule schedule =
                 Schedule.of(
-                        TASK_NAME_,
+                        STUDY,
                         false,
-                        TODAY_DATE,
-                        TODAY_PLUS_1_DATE,
-                        MEMO,
-                        TaskStatus.IN_PROGRESS,
-                        1,
-                        false,
-                        userId);
-
-        return schedule;
-    }
-
-    public static Schedule YESTERDAY_SCHEDULE(Long userId) {
-        Schedule schedule =
-                Schedule.of(
-                        TASK_NAME_,
-                        false,
-                        TODAY_MINUS_1_DATE,
-                        TODAY_MINUS_1_DATE,
+                        YEAR_2024_MONTH_04_DAY_17_HOUR_8_MIN_00_DATE,
+                        YEAR_2024_MONTH_04_DAY_18_HOUR_13_MIN_00_DATE,
                         MEMO,
                         TaskStatus.IN_PROGRESS,
                         1,
