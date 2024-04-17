@@ -26,11 +26,11 @@ public class ScheduleTime {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time", nullable = true)
     @Convert(converter = TimestampConverter.class)
     private LocalDateTime startTime;
 
-    @Column(name = "stop_time", nullable = false)
+    @Column(name = "stop_time", nullable = true)
     @Convert(converter = TimestampConverter.class)
     private LocalDateTime stopTime;
 
