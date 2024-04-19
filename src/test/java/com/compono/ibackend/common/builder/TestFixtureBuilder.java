@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestFixtureBuilder {
+
     @Autowired private BuilderSupporter builderSupporter;
 
     public ScheduleTime buildScheduleTime(ScheduleTime scheduleTime) {

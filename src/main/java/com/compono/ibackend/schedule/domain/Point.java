@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "`point`")
 public class Point {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

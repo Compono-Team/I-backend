@@ -15,5 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 @Import(value = {TestFixtureBuilder.class, BuilderSupporter.class})
 @Sql(value = {"/truncate.sql"})
 public class RepositoryTest {
+
     @Autowired protected TestFixtureBuilder testFixtureBuilder;
 }

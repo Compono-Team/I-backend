@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 public record ScheduleWithTimesDTO(
         Long scheduleId, String taskName, List<ScheduleTimeDTO> scheduleTimeList) {
+
     public static ScheduleWithTimesDTO from(Schedule schedule) {
         List<ScheduleTime> scheduleTimes = schedule.getScheduleTimes();
         return new ScheduleWithTimesDTO(

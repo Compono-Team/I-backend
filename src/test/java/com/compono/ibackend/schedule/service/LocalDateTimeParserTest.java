@@ -3,7 +3,6 @@ package com.compono.ibackend.schedule.service;
 import static com.compono.ibackend.common.enumType.ErrorCode.INVALID_DATE_TIME_FORMAT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.compono.ibackend.common.exception.DateFormatException;
 import com.compono.ibackend.schedule.service.parser.LocalDateTimeParser;

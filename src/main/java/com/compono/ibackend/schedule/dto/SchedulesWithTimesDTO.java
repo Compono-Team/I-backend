@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record SchedulesWithTimesDTO(List<ScheduleWithTimesDTO> scheduleWithTimes) {
+
     public static SchedulesWithTimesDTO from(List<Schedule> schedules) {
         List<ScheduleWithTimesDTO> scheduleWithTimesDTOList = new ArrayList<>();
         for (Schedule schedule : schedules) {

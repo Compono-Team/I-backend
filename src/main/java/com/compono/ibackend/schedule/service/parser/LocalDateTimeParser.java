@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LocalDateTimeParser {
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
     public LocalDateTime parse(String dateString) {

@@ -88,6 +88,7 @@ class ScheduleTimeServiceTest extends ServiceTest {
     @Nested
     @DisplayName("스케쥴 시간을 수정시")
     class updateScheduleTime {
+
         @DisplayName("성공적으로 수정한다.")
         @Test
         void success() {

@@ -11,5 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Sql(value = {"/truncate.sql"})
 public class ServiceTest {
+
     @Autowired protected TestFixtureBuilder testFixtureBuilder;
 }

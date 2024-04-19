@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
     @Query(
             "select s from Schedule s where s.userId = :userId and (:startDate <= s.startDate and :endDate>=s.startDate) or (:startDate <= s.endDate and :endDate>=s.endDate)")
     List<Schedule> findByUserIdAndDateWithinRange(
