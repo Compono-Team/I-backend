@@ -1,0 +1,32 @@
+=== 스케줄 시간 등록 API
+---
+
+=== 스케쥴 시작 시간 등록
+
+==== 1. Curl Request
+
+include::{snippets}/timeline/scheduleTime/start/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/timeline/scheduleTime/start/http-request.adoc[]
+
+==== 3. HTTP Response Body
+
+include::{snippets}/timeline/scheduleTime/start/response-body.adoc[]
+include::{snippets}/timeline/scheduleTime/start/response-fields.adoc[]
+
+=== 스케쥴 종료 시간 업데이트
+
+==== 1. Curl Request
+
+include::{snippets}/timeline/scheduleTime/stop/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/timeline/scheduleTime/stop/http-request.adoc[]
+
+==== 3. HTTP Response Body
+
+include::{snippets}/timeline/scheduleTime/stop/response-body.adoc[]
+include::{snippets}/timeline/scheduleTime/stop/response-fields.adoc[]

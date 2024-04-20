@@ -22,21 +22,25 @@ public class ScheduleTimeController {
     @GetMapping(
             value = "/timeline",
             params = {"userId", "year", "month", "day"})
-    public ResponseEntity<SchedulesWithTimesDTO> getTimeLine(
-            Long userId, int year, int month, int day) {
+    public ResponseEntity<SchedulesWithTimesDTO> getDailySchedules(
+            Long userId, Integer year, Integer month, Integer day) {
         return ResponseEntity.ok()
                 .body(scheduleTimeService.findSchedulesAndTimeInPeriod(userId, year, month, day));
     }
 
-    @PostMapping("/time/start/{scheduleId}")
+    @PostMapping(
+            value = "/time/start/{scheduleId}",
+            params = {"startDateString"})
     public ResponseEntity<ScheduleTimeResponse> saveScheduleTimeStart(
-            @PathVariable(name = "scheduleId") Long scheduleId, String dateString) {
-        return ResponseEntity.ok().body(scheduleTimeService.create(scheduleId, dateString));
+            @PathVariable(name = "scheduleId") Long scheduleId, String startDateString) {
+        return ResponseEntity.ok().body(scheduleTimeService.create(scheduleId, startDateString));
     }
 
-    @PatchMapping("/time/stop/{scheduleTimeId}")
+    @PatchMapping(
+            value = "/time/stop/{scheduleTimeId}",
+            params = {"stopDateString"})
     public ResponseEntity<ScheduleTimeResponse> updateScheduleTimeStop(
-            @PathVariable(name = "scheduleTimeId") Long scheduleTimeId, String dateString) {
-        return ResponseEntity.ok().body(scheduleTimeService.update(scheduleTimeId, dateString));
+            @PathVariable(name = "scheduleTimeId") Long scheduleTimeId, String stopDateString) {
+        return ResponseEntity.ok().body(scheduleTimeService.update(scheduleTimeId, stopDateString));
     }
 }

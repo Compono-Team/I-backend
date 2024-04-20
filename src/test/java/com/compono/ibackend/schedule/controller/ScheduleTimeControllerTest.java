@@ -1,7 +1,13 @@
 package com.compono.ibackend.schedule.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.compono.ibackend.common.fixtures.ScheduleTimeFixtures.YEAR_2024_MONTH_04_DAY_17_HOUR_12_AND_13_SCHEDULE_TIME;
+import static com.compono.ibackend.common.fixtures.ScheduleTimeFixtures.YEAR_2024_MONTH_04_DAY_17_HOUR_12_SCHEDULE_TIME;
+import static com.compono.ibackend.common.fixtures.ScheduleTimeFixtures.YEAR_2024_MONTH_04_DAY_17_HOUR_14_AND_17_SCHEDULE_TIME;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -10,107 +16,115 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.compono.ibackend.common.ApiDocsTest;
+import com.compono.ibackend.common.fixtures.ScheduleFixtures;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.schedule.domain.ScheduleTime;
-import com.compono.ibackend.schedule.dto.ScheduleWithScheduleTimeDTO;
-import com.compono.ibackend.schedule.dto.request.TimeLineRequest;
+import com.compono.ibackend.schedule.dto.SchedulesWithTimesDTO;
 import com.compono.ibackend.schedule.dto.response.ScheduleTimeResponse;
-import com.compono.ibackend.schedule.enumType.TaskStatus;
-import com.compono.ibackend.schedule.service.TimeLineService;
-import com.compono.ibackend.user.domain.User;
-import com.compono.ibackend.user.dto.request.UserAddRequest;
-import com.compono.ibackend.user.enumType.OauthProvider;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import com.compono.ibackend.schedule.service.ScheduleTimeService;
 import java.util.List;
-import java.util.UUID;
-import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.servlet.MockMvc;
 
-@DisplayName("[컨드롤러] - 사전예약")
+@DisplayName("[컨드롤러] - 타임라인")
 @WebMvcTest(ScheduleTimeController.class)
-@AutoConfigureRestDocs
-class ScheduleTimeControllerTest {
-    private final MockMvc mvc;
+class ScheduleTimeControllerTest extends ApiDocsTest {
 
-    @MockBean private TimeLineService timeLineService;
-
-    ObjectMapper objectMapper;
-
-    ScheduleTimeControllerTest(@Autowired MockMvc mvc) {
-        this.mvc = mvc;
-    }
+    @MockBean private ScheduleTimeService scheduleTimeService;
 
     @DisplayName("{GET} 타임라인 조회 - 정상호출")
     @Test
     @WithMockUser(
             username = "ADMIN",
             roles = {"SUPER"})
-    void getTimeLine() throws Exception {
-        Long userId = 1L;
-        LocalDateTime time = LocalDateTime.now();
-        int n = 2;
-        JSONObject request = new JSONObject();
-        request.put("userId", 1L);
-        request.put("time", time);
-        request.put("n", 2);
-        TimeLineRequest timeLineRequest = new TimeLineRequest(userId, time, n);
-        List<ScheduleWithScheduleTimeDTO> expectedSchedules = createMockSchedules(); // Mock 데이터 생성
+    void getDailySchedules() throws Exception {
 
-        given(timeLineService.findScheduleTimeWithinRange(userId, time, n))
-                .willReturn(expectedSchedules);
+        Schedule schedule1 = Mockito.spy(ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_SCHEDULE(1L));
+        Schedule schedule2 =
+                Mockito.spy(ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_AND_18_SCHEDULE(1L));
+        List<ScheduleTime> scheduleTime1 =
+                List.of(
+                        Mockito.spy(
+                                YEAR_2024_MONTH_04_DAY_17_HOUR_14_AND_17_SCHEDULE_TIME(schedule1)));
+        List<ScheduleTime> scheduleTime2 =
+                List.of(
+                        Mockito.spy(
+                                YEAR_2024_MONTH_04_DAY_17_HOUR_12_AND_13_SCHEDULE_TIME(schedule2)));
+        when(schedule1.getId()).thenReturn(1L);
+        when(schedule2.getId()).thenReturn(2L);
+        when(scheduleTime1.get(0).getId()).thenReturn(1L);
+        when(scheduleTime2.get(0).getId()).thenReturn(1L);
+        when(schedule1.getScheduleTimes()).thenReturn(scheduleTime1);
+        when(schedule2.getScheduleTimes()).thenReturn(scheduleTime2);
+
+        List<Schedule> schedules = List.of(schedule1, schedule2);
+        SchedulesWithTimesDTO response = SchedulesWithTimesDTO.from(schedules);
+        given(
+                        scheduleTimeService.findSchedulesAndTimeInPeriod(
+                                anyLong(), anyInt(), anyInt(), anyInt()))
+                .willReturn(response);
 
         mvc.perform(
                         RestDocumentationRequestBuilders.get("/api/v1/schedule/timeline")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(request.toString()))
+                                .param("userId", String.valueOf(1L))
+                                .param("year", "2024")
+                                .param("month", "4")
+                                .param("day", "17"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(
                         document(
-                                "get-schedule-timeline",
+                                "timeline/schedules/getDailySchedules",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                requestFields(
-                                        fieldWithPath("userId")
-                                                .type(NUMBER)
-                                                .description("테스트 : 사용자 id (토큰 생기면 없어질 예정)"),
-                                        fieldWithPath("time")
-                                                .type(STRING)
-                                                .description("타임라인 조회할 시"),
-                                        fieldWithPath("n")
-                                                .type(NUMBER)
-                                                .description(
-                                                        "테스트 : 임시 시간(시간 체크를 위한 변수입니다. 변수값이 정해지면 없어질 예정)")),
+                                queryParameters(
+                                        // todo
+                                        parameterWithName("userId")
+                                                .description("임시 테스트 용 userId 추후 토큰으로 변경 예정"),
+                                        parameterWithName("year").description("조회할 연도"),
+                                        parameterWithName("month").description("조회할 월"),
+                                        parameterWithName("day").optional().description("조회할 일")),
                                 responseFields(
-                                        fieldWithPath("[].taskName")
+                                        fieldWithPath("scheduleWithTimes")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("데일리 일정 리스트"),
+                                        fieldWithPath("scheduleWithTimes[0].scheduleId")
+                                                .type(NUMBER)
+                                                .description("스케줄 ID"),
+                                        fieldWithPath("scheduleWithTimes[0].taskName")
                                                 .type(STRING)
                                                 .description("스케줄 이름"),
-                                        fieldWithPath("[].startTime")
+                                        fieldWithPath("scheduleWithTimes[0].scheduleTimeList")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("일정 타임라인 리스트"),
+                                        fieldWithPath("scheduleWithTimes[0].scheduleTimeList[0].id")
+                                                .type(NUMBER)
+                                                .description("타임라인 ID"),
+                                        fieldWithPath(
+                                                        "scheduleWithTimes[0].scheduleTimeList[0].stopTime")
                                                 .type(STRING)
-                                                .description("시작 시간"),
-                                        fieldWithPath("[].stopTime")
+                                                .description("종료 시간"),
+                                        fieldWithPath(
+                                                        "scheduleWithTimes[0].scheduleTimeList[0].startTime")
                                                 .type(STRING)
-                                                .description("종료 시간"))));
+                                                .description("시작 시간"))));
     }
 
     @DisplayName("{POST} 스케쥴 타임라인 생성 - 시작시간")
@@ -119,21 +133,28 @@ class ScheduleTimeControllerTest {
             username = "ADMIN",
             roles = {"SUPER"})
     void saveScheduleTimeStartTest() throws Exception {
+
         Long scheduleId = 1L;
-        ScheduleTimeResponse scheduleTime =
-                ScheduleTimeResponse.from(createScheduleTime(scheduleId));
-        given(timeLineService.createScheduleTimeStart(scheduleId)).willReturn(scheduleTime);
+        Schedule schedule = Mockito.spy(ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_SCHEDULE(1L));
+
+        ScheduleTime scheduleTime =
+                Mockito.spy(YEAR_2024_MONTH_04_DAY_17_HOUR_12_SCHEDULE_TIME(schedule));
+        when(schedule.getId()).thenReturn(scheduleId);
+        when(scheduleTime.getId()).thenReturn(1L);
+        ScheduleTimeResponse response = ScheduleTimeResponse.from(scheduleTime);
+        given(scheduleTimeService.create(anyLong(), anyString())).willReturn(response);
 
         mvc.perform(
                         RestDocumentationRequestBuilders.post(
                                         "/api/v1/schedule/time/start/{scheduleId}", scheduleId)
                                 .with(csrf().asHeader())
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("startDateString", "202404171200"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(
                         document(
-                                "post-schedule-time-start",
+                                "timeline/scheduleTime/start",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
@@ -145,32 +166,38 @@ class ScheduleTimeControllerTest {
                                                 .description("시작 시간"),
                                         fieldWithPath("stopTime")
                                                 .type(STRING)
-                                                .description("종료 시간"))));
+                                                .description("종료 시간")
+                                                .optional())));
     }
 
-    @DisplayName("{POST} 스케쥴 타임라인 업데이트 - 종료시간")
+    @DisplayName("{PATCH} 스케쥴 타임라인 업데이트 - 종료시간")
     @Test
     @WithMockUser(
             username = "ADMIN",
             roles = {"SUPER"})
     void updateScheduleTimeStopTest() throws Exception {
         Long scheduleTimeId = 1L;
-        ScheduleTimeResponse updatedScheduleTime =
-                ScheduleTimeResponse.from(createScheduleTime(scheduleTimeId));
-        given(timeLineService.updateScheduleTimeStop(scheduleTimeId))
-                .willReturn(updatedScheduleTime);
+        Schedule schedule = Mockito.spy(ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_SCHEDULE(1L));
+
+        ScheduleTime scheduleTime =
+                Mockito.spy(YEAR_2024_MONTH_04_DAY_17_HOUR_14_AND_17_SCHEDULE_TIME(schedule));
+
+        when(scheduleTime.getId()).thenReturn(1L);
+        ScheduleTimeResponse response = ScheduleTimeResponse.from(scheduleTime);
+        given(scheduleTimeService.update(anyLong(), anyString())).willReturn(response);
 
         mvc.perform(
                         patch("/api/v1/schedule/time/stop/{scheduleTimeId}", scheduleTimeId)
                                 .with(csrf().asHeader())
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("stopDateString", "202404171700"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(
                         document(
-                                "patch-schedule-time-stop",
+                                "timeline/scheduleTime/stop",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(
@@ -184,45 +211,5 @@ class ScheduleTimeControllerTest {
                                         fieldWithPath("stopTime")
                                                 .type(STRING)
                                                 .description("종료 시간"))));
-    }
-
-    private List<ScheduleWithScheduleTimeDTO> createMockSchedules() {
-        LocalDateTime time = LocalDateTime.now();
-        return Arrays.asList(
-                new ScheduleWithScheduleTimeDTO("테스트 일정", time, time.plusHours(1)),
-                new ScheduleWithScheduleTimeDTO("테스트 일정2", time.plusHours(1), time.plusHours(2)));
-    }
-
-    private ScheduleTime createScheduleTime(Long scheduleTimeId) {
-        ScheduleTime scheduleTime = new ScheduleTime();
-        scheduleTime.setStartTime(LocalDateTime.of(2024, 3, 8, 12, 12));
-        scheduleTime.setStopTime(LocalDateTime.of(2024, 3, 8, 13, 12));
-        ReflectionTestUtils.setField(scheduleTime, "id", scheduleTimeId);
-        return scheduleTime;
-    }
-
-    private Schedule createSchedule(Long scheduleId) {
-        Schedule schedule =
-                Schedule.of(
-                        "운동하기",
-                        false,
-                        LocalDateTime.now().plusDays(1),
-                        LocalDateTime.now().plusDays(1).plusHours(1),
-                        "헬스장 가기",
-                        TaskStatus.IN_PROGRESS,
-                        1,
-                        false,
-                        createUser("test@test.com"));
-
-        ReflectionTestUtils.setField(schedule, "id", scheduleId);
-
-        return schedule;
-    }
-
-    private User createUser(String email) {
-        UserAddRequest request =
-                new UserAddRequest(
-                        email, "compono", OauthProvider.KAKAO, UUID.randomUUID().toString(), true);
-        return User.from(request);
     }
 }

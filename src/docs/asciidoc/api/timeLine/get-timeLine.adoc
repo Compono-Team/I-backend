@@ -1,0 +1,14 @@
+=== 타임라인 조회 API
+
+==== 1. Curl Request
+
+include::{snippets}/timeline/schedules/getDailySchedules/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/timeline/schedules/getDailySchedules/http-request.adoc[]
+
+==== 3. HTTP Response
+
+include::{snippets}/timeline/schedules/getDailySchedules/response-body.adoc[]
+include::{snippets}/timeline/schedules/getDailySchedules/response-fields.adoc[]
