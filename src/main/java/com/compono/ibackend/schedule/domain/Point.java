@@ -25,13 +25,29 @@ public class Point {
     @Column(name = "id")
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private Schedule schedule;
+
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
     @Column(name = "latitude", nullable = false)
     private Double latitude;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private Schedule schedule;
+    public Point(Schedule schedule, double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+
+        this.setSchedule(schedule);
+    }
+
+    public static Point of(Schedule schedule, double longitude, double latitude) {
+        return new Point(schedule, longitude, latitude);
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+        schedule.setPoint(this);
+    }
 }

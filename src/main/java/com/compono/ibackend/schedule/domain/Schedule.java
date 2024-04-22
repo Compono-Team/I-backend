@@ -3,7 +3,11 @@ package com.compono.ibackend.schedule.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.compono.ibackend.common.converter.TimestampConverter;
+import com.compono.ibackend.schedule.enumType.RoutinePeriod;
+import com.compono.ibackend.schedule.enumType.SchedulePriority;
 import com.compono.ibackend.schedule.enumType.TaskStatus;
+import com.compono.ibackend.tag.domain.TagSchedule;
+import com.compono.ibackend.user.domain.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -32,11 +36,16 @@ public class Schedule {
     @Column(name = "id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(name = "task_name", nullable = false, length = 100)
     private String taskName;
 
-    @Column(name = "is_routine", nullable = false)
-    private Boolean isRoutine;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority", nullable = false)
+    private SchedulePriority priority;
 
     @Column(name = "start_date", nullable = false)
     @Convert(converter = TimestampConverter.class)
@@ -46,52 +55,73 @@ public class Schedule {
     @Convert(converter = TimestampConverter.class)
     private LocalDateTime endDate;
 
-    @Column(name = "memo", nullable = false, columnDefinition = "TEXT", length = 1000)
-    private String memo;
+    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL)
+    private Point point;
+
+    @Column(name = "is_routine", nullable = false)
+    private Boolean isRoutine;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "routine_period", nullable = false)
+    private RoutinePeriod routinePeriod;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "task_status", nullable = false)
     private TaskStatus taskStatus;
 
-    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL)
-    private Point point;
+    @Column(name = "is_marked", nullable = false)
+    private Boolean isMarked;
 
-    @Column(name = "schedule_order", nullable = false)
-    private int order;
-
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
 
     @OneToMany(
             mappedBy = "schedule",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)
-    private List<ScheduleTime> scheduleTimes = new ArrayList<>();
+    private List<TagSchedule> tagSchedules = new ArrayList<>();
 
-    @Column(name = "is_marked", nullable = false)
-    private Boolean isMarked;
-
-    public static Schedule of(
+    public Schedule(
+            User user,
             String taskName,
-            Boolean isRoutine,
+            SchedulePriority priority,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            String memo,
-            TaskStatus taskStatus,
-            int order,
-            Boolean isMarked,
-            Long userId) {
-        Schedule schedule = new Schedule();
-        schedule.taskName = taskName;
-        schedule.isRoutine = isRoutine;
-        schedule.startDate = startDate;
-        schedule.endDate = endDate;
-        schedule.memo = memo;
-        schedule.taskStatus = taskStatus;
-        schedule.order = order;
-        schedule.isMarked = isMarked;
-        schedule.userId = userId;
-        return schedule;
+            boolean isRoutine,
+            RoutinePeriod routinePeriod,
+            boolean isMarked) {
+        this.user = user;
+        this.taskName = taskName;
+        this.priority = priority;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.isRoutine = isRoutine;
+        this.routinePeriod = routinePeriod;
+        this.isMarked = isMarked;
+
+        this.isDeleted = false;
+        this.taskStatus = TaskStatus.IN_PROGRESS;
+    }
+
+    public static Schedule of(
+            User user,
+            String taskName,
+            SchedulePriority priority,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            boolean isRoutine,
+            RoutinePeriod routinePeriod,
+            boolean isMarked) {
+        return new Schedule(
+                user, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

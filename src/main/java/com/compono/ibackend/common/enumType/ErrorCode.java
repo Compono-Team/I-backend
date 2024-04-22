@@ -17,10 +17,13 @@ public enum ErrorCode {
     INVALID_EVENTDATETIME(4007, "유효한지 않은 EventDateTime 값입니다."),
     DUPLICATED_FAILED(4008, "이미 데이터가 존재합니다."),
     NOT_FOUND_USER_ID(4009, "유저 ID가 존재하지 않습니다."),
-    NOT_FOUND_SCHEDULE(4015, "스케쥴이 존재하지 않습니다."),
     NOT_FOUND_SCHEDULE_TIME(4016, "스케쥴 시간이 존재하지 않습니다."),
     SCHEDULE_END_TIME_BEFORE_START_TIME(4017, "종료 시간이 시작 시간보다 이전입니다."),
     INVALID_DATE_TIME_FORMAT(4018, "잘못된 날짜 형식입니다."),
+    INVALID_SCHEDULE(4010, "유효하지 않은 스케줄 데이터 값입니다."),
+    NOT_FOUND_TAG_ID(4011, "요청한 tag id가 존재하지 않습니다."),
+    NOT_FOUND_USER_EMAIL(4012, "요청한 user email이 존재하지 않습니다."),
+    NOT_FOUND_SCHEDULE_ID(4012, "요청한 schedule id이 존재하지 않습니다."),
 
     // 401
     EXPIRED_TOKEN(4010, "만료된 토큰입니다."),
