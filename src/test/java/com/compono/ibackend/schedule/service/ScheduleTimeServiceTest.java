@@ -38,7 +38,7 @@ class ScheduleTimeServiceTest extends ServiceTest {
     @DisplayName("스케쥴 시간을 생성시")
     class createScheduleTime {
 
-        @DisplayName("성공적으로 생성한다.")
+        @DisplayName("[정상 케이스] 성공적으로 생성한다.")
         @Test
         void success() {
             // Given
@@ -61,7 +61,7 @@ class ScheduleTimeServiceTest extends ServiceTest {
                     .isEqualTo(YEAR_2024_MONTH_04_DAY_17_HOUR_12_MIN_00_DATE_);
         }
 
-        @DisplayName("스케줄이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("[오류 케이스 - NOT_FOUND_SCHEDULE] 스케줄이 존재하지 않으면 예외가 발생한다.")
         @Test
         void failScheduleNotExistById() {
             // given
@@ -89,7 +89,7 @@ class ScheduleTimeServiceTest extends ServiceTest {
     @DisplayName("스케쥴 시간을 수정시")
     class updateScheduleTime {
 
-        @DisplayName("성공적으로 수정한다.")
+        @DisplayName("[정상 케이스] 성공적으로 수정한다.")
         @Test
         void success() {
             // Given
@@ -115,7 +115,7 @@ class ScheduleTimeServiceTest extends ServiceTest {
             assertThat(result.stopTime()).isEqualTo(YEAR_2024_MONTH_04_DAY_17_HOUR_13_MIN_00_DATE_);
         }
 
-        @DisplayName("스케줄 타임이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("[오류 케이스 - NOT_FOUND_SCHEDULE_TIME] 스케줄 타임이 존재하지 않으면 예외가 발생한다.")
         @Test
         void failScheduleTimeNotExistById() {
             // given
@@ -145,7 +145,7 @@ class ScheduleTimeServiceTest extends ServiceTest {
     @DisplayName("타임라인 조회할 시")
     class findSchedulesAndTimeInPeriod {
 
-        @DisplayName("성공적으로 조회한다.")
+        @DisplayName("[정상 케이스] 성공적으로 조회한다.")
         @Test
         void success() {
             // Given

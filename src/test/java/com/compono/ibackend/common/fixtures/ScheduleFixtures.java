@@ -1,7 +1,8 @@
 package com.compono.ibackend.common.fixtures;
 
 import com.compono.ibackend.schedule.domain.Schedule;
-import com.compono.ibackend.schedule.enumType.TaskStatus;
+import com.compono.ibackend.schedule.enumType.RoutinePeriod;
+import com.compono.ibackend.schedule.enumType.SchedulePriority;
 import java.time.LocalDateTime;
 
 public class ScheduleFixtures {
@@ -23,15 +24,14 @@ public class ScheduleFixtures {
     public static Schedule YEAR_2024_MONTH_04_DAY_17_SCHEDULE(Long userId) {
         Schedule schedule =
                 Schedule.of(
+                        userId,
                         EXERCISE,
-                        false,
+                        SchedulePriority.P2,
                         YEAR_2024_MONTH_04_DAY_17_HOUR_8_MIN_00_DATE,
                         YEAR_2024_MONTH_04_DAY_17_HOUR_13_MIN_00_DATE,
-                        MEMO,
-                        TaskStatus.IN_PROGRESS,
-                        1,
-                        false,
-                        userId);
+                        true,
+                        RoutinePeriod.EVERYDAY,
+                        false);
 
         return schedule;
     }
@@ -39,15 +39,14 @@ public class ScheduleFixtures {
     public static Schedule YEAR_2024_MONTH_04_DAY_17_AND_18_SCHEDULE(Long userId) {
         Schedule schedule =
                 Schedule.of(
+                        userId,
                         STUDY,
-                        false,
+                        SchedulePriority.P1,
                         YEAR_2024_MONTH_04_DAY_17_HOUR_8_MIN_00_DATE,
                         YEAR_2024_MONTH_04_DAY_18_HOUR_13_MIN_00_DATE,
-                        MEMO,
-                        TaskStatus.IN_PROGRESS,
-                        1,
                         false,
-                        userId);
+                        RoutinePeriod.FRIDAY,
+                        false);
 
         return schedule;
     }

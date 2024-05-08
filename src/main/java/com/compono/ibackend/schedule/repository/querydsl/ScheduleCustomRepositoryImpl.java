@@ -9,7 +9,6 @@ import com.compono.ibackend.schedule.dto.response.ScheduleDetailWithTagResponse;
 import com.compono.ibackend.schedule.dto.response.TagDetailResponse;
 import com.compono.ibackend.tag.domain.QTag;
 import com.compono.ibackend.tag.domain.QTagSchedule;
-import com.compono.ibackend.user.domain.User;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import java.util.List;
@@ -23,15 +22,15 @@ public class ScheduleCustomRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public ScheduleDetailWithTagResponse findScheduleByUserAndScheduleId(
-            User user, Long scheduleId) {
+    public ScheduleDetailWithTagResponse findScheduleByUserIdAndScheduleId(
+            Long userId, Long scheduleId) {
         QSchedule qSchedule = QSchedule.schedule;
         QTagSchedule qTagSchedule = QTagSchedule.tagSchedule;
         QTag qTag = QTag.tag;
         QPoint qPoint = QPoint.point;
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(qSchedule.user.eq(user));
+        booleanBuilder.and(qSchedule.userId.eq(userId));
         booleanBuilder.and(qSchedule.id.eq(scheduleId));
         booleanBuilder.and(qSchedule.isDeleted.eq(false));
 

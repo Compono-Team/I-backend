@@ -58,13 +58,13 @@ class ScheduleServiceTest {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
         ScheduleRequest scheduleRequest = createScheduleRequest(schedule, tags);
 
         when(userService.findUserByEmail(EMAIL)).thenReturn(user);
         when(tagService.findAllTagById(scheduleRequest.tags())).thenReturn(tags);
         when(scheduleRepository.save(any(Schedule.class)))
-                .thenReturn(scheduleRequest.toEntity(user));
+                .thenReturn(scheduleRequest.toEntity(user.getId()));
 
         ScheduleResponse response = scheduleService.addSchedule(EMAIL, scheduleRequest);
 
@@ -78,14 +78,16 @@ class ScheduleServiceTest {
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
 
-        Schedule invalidDateSchedule = ScheduleFactory.createInvaildDateSchedule(user, tags);
+        Schedule invalidDateSchedule =
+                ScheduleFactory.createInvaildDateSchedule(user.getId(), tags);
         ScheduleRequest request1 = createScheduleRequest(invalidDateSchedule, tags);
 
-        Schedule invaildRoutineSchedule = ScheduleFactory.createInvaildRoutineSchedule(user, tags);
+        Schedule invaildRoutineSchedule =
+                ScheduleFactory.createInvaildRoutineSchedule(user.getId(), tags);
         ScheduleRequest request2 = createScheduleRequest(invaildRoutineSchedule, tags);
 
         Schedule invaildNotRoutineSchedule =
-                ScheduleFactory.createInvaildNotRoutineSchedule(user, tags);
+                ScheduleFactory.createInvaildNotRoutineSchedule(user.getId(), tags);
         ScheduleRequest request3 = createScheduleRequest(invaildNotRoutineSchedule, tags);
 
         CustomException ex1 =
@@ -110,7 +112,7 @@ class ScheduleServiceTest {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
         ScheduleRequest scheduleRequest = createScheduleRequest(schedule, tags);
 
         when(tagService.findAllTagById(scheduleRequest.tags())).thenReturn(tags.subList(0, 1));
@@ -119,7 +121,7 @@ class ScheduleServiceTest {
                 assertThrows(
                         CustomException.class,
                         () -> scheduleService.addSchedule(EMAIL, scheduleRequest));
-        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_TAG_ID);
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_TAG);
     }
 
     @DisplayName("[정상 케이스] id로 스케쥴 단일 조회를 한다.")
@@ -128,12 +130,12 @@ class ScheduleServiceTest {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
         ScheduleDetailWithTagResponse scheduleDetailResponse =
                 createScheduleDetailWithTagResponse(schedule, tags);
 
         when(userService.findUserByEmail(EMAIL)).thenReturn(user);
-        when(scheduleRepository.findScheduleByUserAndScheduleId(user, schedule.getId()))
+        when(scheduleRepository.findScheduleByUserIdAndScheduleId(user.getId(), schedule.getId()))
                 .thenReturn(scheduleDetailResponse);
 
         ScheduleDetailWithTagResponse foundResponse =
@@ -149,10 +151,10 @@ class ScheduleServiceTest {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
 
         when(userService.findUserByEmail(EMAIL)).thenReturn(user);
-        when(scheduleRepository.findScheduleByUserAndScheduleId(user, schedule.getId()))
+        when(scheduleRepository.findScheduleByUserIdAndScheduleId(user.getId(), schedule.getId()))
                 .thenReturn(null);
 
         CustomException ex =
@@ -161,7 +163,7 @@ class ScheduleServiceTest {
                         () ->
                                 scheduleService.findScheduleDetailById(
                                         user.getEmail(), schedule.getId()));
-        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE);
     }
 
     @DisplayName("[정상 케이스] 스케줄을 삭제한다.")
@@ -170,7 +172,7 @@ class ScheduleServiceTest {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
 
         when(userService.findUserByEmail(EMAIL)).thenReturn(user);
         when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
@@ -190,7 +192,7 @@ class ScheduleServiceTest {
         ReflectionTestUtils.setField(user, "id", 1L);
         User another = createUser("another@test.com");
         ReflectionTestUtils.setField(another, "id", 2L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
 
         when(userService.findUserByEmail(another.getEmail())).thenReturn(another);
         when(scheduleRepository.findById(schedule.getId())).thenReturn(Optional.of(schedule));
@@ -199,7 +201,7 @@ class ScheduleServiceTest {
                 assertThrows(
                         CustomException.class,
                         () -> scheduleService.deleteSchedule(another.getEmail(), schedule.getId()));
-        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE);
     }
 
     @DisplayName("[정상 케이스] id에 대한 스케줄를 조회한다.")
@@ -208,7 +210,7 @@ class ScheduleServiceTest {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
 
         when(scheduleRepository.findById(anyLong())).thenReturn(Optional.of(schedule));
 
@@ -224,7 +226,7 @@ class ScheduleServiceTest {
         List<Tag> tags = TagFactory.createTags();
         User user = createUser();
         ReflectionTestUtils.setField(user, "id", 1L);
-        Schedule schedule = ScheduleFactory.createSchedule(user, tags);
+        Schedule schedule = ScheduleFactory.createSchedule(user.getId(), tags);
 
         when(scheduleRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -232,7 +234,7 @@ class ScheduleServiceTest {
                 assertThrows(
                         CustomException.class,
                         () -> scheduleService.findScheduleById(schedule.getId()));
-        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE_ID);
+        assertThat(ex.getErrorCode()).isEqualTo(ErrorCode.NOT_FOUND_SCHEDULE);
     }
 
     public User createUser() {

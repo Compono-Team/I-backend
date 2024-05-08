@@ -7,7 +7,6 @@ import com.compono.ibackend.schedule.enumType.RoutinePeriod;
 import com.compono.ibackend.schedule.enumType.SchedulePriority;
 import com.compono.ibackend.schedule.enumType.TaskStatus;
 import com.compono.ibackend.tag.domain.TagSchedule;
-import com.compono.ibackend.user.domain.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -36,9 +35,8 @@ public class Schedule {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "task_name", nullable = false, length = 100)
     private String taskName;
@@ -80,10 +78,17 @@ public class Schedule {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)
+    private List<ScheduleTime> scheduleTimes = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "schedule",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<TagSchedule> tagSchedules = new ArrayList<>();
 
-    public Schedule(
-            User user,
+    protected Schedule(
+            Long userId,
             String taskName,
             SchedulePriority priority,
             LocalDateTime startDate,
@@ -91,7 +96,7 @@ public class Schedule {
             boolean isRoutine,
             RoutinePeriod routinePeriod,
             boolean isMarked) {
-        this.user = user;
+        this.userId = userId;
         this.taskName = taskName;
         this.priority = priority;
         this.startDate = startDate;
@@ -105,7 +110,7 @@ public class Schedule {
     }
 
     public static Schedule of(
-            User user,
+            Long userId,
             String taskName,
             SchedulePriority priority,
             LocalDateTime startDate,
@@ -114,7 +119,7 @@ public class Schedule {
             RoutinePeriod routinePeriod,
             boolean isMarked) {
         return new Schedule(
-                user, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
+                userId, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
     }
 
     public void setPoint(Point point) {

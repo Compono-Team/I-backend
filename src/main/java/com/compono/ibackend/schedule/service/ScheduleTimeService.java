@@ -78,7 +78,7 @@ public class ScheduleTimeService {
     // todo userId 토큰으로 통일하기
     @Transactional(readOnly = true)
     public SchedulesWithTimesDTO findSchedulesAndTimeInPeriod(
-            long userId, int year, int month, int day) {
+            Long userId, int year, int month, int day) {
 
         Period period = Period.of(year, month, day);
         List<Schedule> schedules =

@@ -45,11 +45,11 @@ public class ScheduleService {
             // 2. tag 존재 확인
             List<Tag> tags = tagService.findAllTagById(scheduleRequest.tags());
             if (tags.size() != scheduleRequest.tags().size()) {
-                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TAG_ID);
+                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_TAG);
             }
 
             // 3. Schedule 저장
-            Schedule schedule = scheduleRequest.toEntity(user);
+            Schedule schedule = scheduleRequest.toEntity(user.getId());
             scheduleRepository.save(schedule);
 
             // 4. Point 저장 및 Schedule과 연관관계 연결
@@ -94,9 +94,9 @@ public class ScheduleService {
 
         // 1. 조회
         ScheduleDetailWithTagResponse scheduleResponse =
-                scheduleRepository.findScheduleByUserAndScheduleId(user, scheduleId);
+                scheduleRepository.findScheduleByUserIdAndScheduleId(user.getId(), scheduleId);
         if (scheduleResponse == null) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID);
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE);
         }
         return scheduleResponse;
     }
@@ -112,10 +112,10 @@ public class ScheduleService {
         User user = userService.findUserByEmail(email);
 
         Schedule schedule = findScheduleById(scheduleId);
-        if (schedule.getUser() == user) {
+        if (schedule.getUserId() == user.getId()) {
             schedule.setIsDeleted(true);
         } else {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID);
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE);
         }
 
         scheduleRepository.save(schedule);
@@ -134,6 +134,6 @@ public class ScheduleService {
                 .orElseThrow(
                         () ->
                                 new CustomException(
-                                        HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE_ID));
+                                        HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_SCHEDULE));
     }
 }

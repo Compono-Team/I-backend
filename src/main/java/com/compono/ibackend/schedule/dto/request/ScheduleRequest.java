@@ -3,7 +3,6 @@ package com.compono.ibackend.schedule.dto.request;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.schedule.enumType.RoutinePeriod;
 import com.compono.ibackend.schedule.enumType.SchedulePriority;
-import com.compono.ibackend.user.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ public record ScheduleRequest(
         @NotNull boolean isMarked) {
 
     public static Schedule of(
-            User user,
+            Long userId,
             String taskName,
             SchedulePriority priority,
             LocalDateTime startDate,
@@ -29,12 +28,12 @@ public record ScheduleRequest(
             boolean isRoutine,
             RoutinePeriod routinePeriod,
             boolean isMarked) {
-        return new Schedule(
-                user, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
+        return Schedule.of(
+                userId, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
     }
 
-    public Schedule toEntity(User user) {
+    public Schedule toEntity(Long userId) {
         return ScheduleRequest.of(
-                user, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
+                userId, taskName, priority, startDate, endDate, isRoutine, routinePeriod, isMarked);
     }
 }

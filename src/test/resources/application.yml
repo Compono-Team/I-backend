@@ -5,4 +5,4 @@ spring:
       dev: "dev, datasource-dev, key"
       prod: "production, datasource, key"
       test : "test, key"
-    active: local
+    active: test

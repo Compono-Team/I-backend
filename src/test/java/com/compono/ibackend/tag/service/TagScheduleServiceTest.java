@@ -43,6 +43,6 @@ class TagScheduleServiceTest {
         User user = UserFactory.createUser(EMAIL);
         ReflectionTestUtils.setField(user, "id", 1L);
 
-        return ScheduleFactory.createSchedule(user, tags);
+        return ScheduleFactory.createSchedule(user.getId(), tags);
     }
 }
