@@ -2,6 +2,7 @@ package com.compono.ibackend.schedule.service;
 
 import static com.compono.ibackend.common.enumType.ErrorCode.NOT_FOUND_SCHEDULE;
 import static com.compono.ibackend.common.enumType.ErrorCode.NOT_FOUND_SCHEDULE_TIME;
+import static com.compono.ibackend.common.enumType.ErrorCode.SCHEDULE_END_TIME_BEFORE_START_TIME;
 import static com.compono.ibackend.common.fixtures.ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_AND_18_SCHEDULE;
 import static com.compono.ibackend.common.fixtures.ScheduleFixtures.YEAR_2024_MONTH_04_DAY_17_SCHEDULE;
 import static com.compono.ibackend.common.fixtures.ScheduleTimeFixtures.YEAR_2024_MONTH_04_DAY_17_HOUR_12_SCHEDULE_TIME;
@@ -146,6 +147,28 @@ class ScheduleTimeServiceTest extends ServiceTest {
                                             YEAR_2024_MONTH_04_DAY_17_HOUR_13_MIN_00_STRING))
                     .isInstanceOf(BadRequestException.class)
                     .hasMessageContaining(NOT_FOUND_SCHEDULE_TIME.getMsg());
+        }
+
+        @DisplayName("[오류 케이스 - SCHEDULE_END_TIME_BEFORE_START_TIME] 종료 시간이 시작 시간보다 이르면 예외가 발생한다.")
+        @Test
+        void failWhenEndTimeBeforeStartTime() {
+            // Given
+            User user = testFixtureBuilder.buildUser(COMPONO_USER());
+            Long userId = user.getId();
+            List<Schedule> schedule =
+                    testFixtureBuilder.buildSchedule(
+                            List.of(YEAR_2024_MONTH_04_DAY_17_SCHEDULE(userId)));
+            ScheduleTime scheduleTime =
+                    testFixtureBuilder.buildScheduleTime(
+                            YEAR_2024_MONTH_04_DAY_17_HOUR_12_SCHEDULE_TIME(schedule.get(0)));
+            String EARLIER_THAN_START_TIME = "202404171100"; // 시작 시간은 12시, 종료 시간을 11시
+
+            assertThatThrownBy(
+                            () ->
+                                    scheduleTimeService.update(
+                                            scheduleTime.getId(), EARLIER_THAN_START_TIME))
+                    .isInstanceOf(BadRequestException.class)
+                    .hasMessageContaining(SCHEDULE_END_TIME_BEFORE_START_TIME.getMsg());
         }
     }
 
