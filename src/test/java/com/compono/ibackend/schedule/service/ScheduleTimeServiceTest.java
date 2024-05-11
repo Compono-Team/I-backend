@@ -12,6 +12,8 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import com.compono.ibackend.common.ServiceTest;
 import com.compono.ibackend.common.exception.BadRequestException;
+import com.compono.ibackend.oauth.service.GoogleOauthService;
+import com.compono.ibackend.oauth.service.KakaoOauthService;
 import com.compono.ibackend.schedule.domain.Schedule;
 import com.compono.ibackend.schedule.domain.ScheduleTime;
 import com.compono.ibackend.schedule.dto.ScheduleWithTimesDTO;
@@ -26,10 +28,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DisplayName("[비즈니스 로직] - 타임라인")
 class ScheduleTimeServiceTest extends ServiceTest {
+    // todo 밑 오류로 인한 임시조치 -> 삭제 필요
+    // Parameter 0 of constructor in com.compono.ibackend.oauth.service.KakaoOauthService required a
+    // bean of type
 
+    @MockBean private KakaoOauthService kakaoOauthService;
+    @MockBean private GoogleOauthService googleOauthService;
     @Autowired private ScheduleTimeService scheduleTimeService;
     @Autowired private ScheduleRepository scheduleRepository;
     @Autowired private ScheduleTimeRepository scheduleTimeRepository;
