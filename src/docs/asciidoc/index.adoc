@@ -13,14 +13,26 @@ endif::[]
 
 == 커스텀 에러
 
-
 = 사전예약
 
 == 사전예약 생성
+
 include::api/prereservation/create-prereservation.adoc[]
 
 == 사전예약 조회
+
 include::api/prereservation/get-prereservation.adoc[]
 
 == 사전예약 페이지 조회
+
 include::api/prereservation/get-prereservations.adoc[]
+
+= 타임라인
+
+== 타임라인 생성
+
+include::api/timeLine/scheduleTime.adoc[]
+
+== 타임라인 조회
+
+include::api/timeLine/get-timeLine.adoc[]

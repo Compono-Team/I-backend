@@ -6,17 +6,16 @@ import com.compono.ibackend.schedule.enumType.RoutinePeriod;
 import com.compono.ibackend.schedule.enumType.SchedulePriority;
 import com.compono.ibackend.tag.domain.Tag;
 import com.compono.ibackend.tag.domain.TagSchedule;
-import com.compono.ibackend.user.domain.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ScheduleFactory {
 
-    public static Schedule createSchedule(User user, List<Tag> tags) {
+    public static Schedule createSchedule(Long userId, List<Tag> tags) {
         Schedule schedule =
                 Schedule.of(
-                        user,
+                        userId,
                         "알고리즘풀기",
                         SchedulePriority.P1,
                         LocalDateTime.now().plusDays(1),
@@ -36,10 +35,10 @@ public class ScheduleFactory {
         return schedule;
     }
 
-    public static Schedule createInvaildDateSchedule(User user, List<Tag> tags) {
+    public static Schedule createInvaildDateSchedule(Long userId, List<Tag> tags) {
         Schedule schedule =
                 Schedule.of(
-                        user,
+                        userId,
                         "알고리즘풀기",
                         SchedulePriority.P1,
                         null,
@@ -59,10 +58,10 @@ public class ScheduleFactory {
         return schedule;
     }
 
-    public static Schedule createInvaildRoutineSchedule(User user, List<Tag> tags) {
+    public static Schedule createInvaildRoutineSchedule(Long userId, List<Tag> tags) {
         Schedule schedule =
                 Schedule.of(
-                        user,
+                        userId,
                         "알고리즘풀기",
                         SchedulePriority.P1,
                         LocalDateTime.now().plusDays(1),
@@ -82,10 +81,10 @@ public class ScheduleFactory {
         return schedule;
     }
 
-    public static Schedule createInvaildNotRoutineSchedule(User user, List<Tag> tags) {
+    public static Schedule createInvaildNotRoutineSchedule(Long userId, List<Tag> tags) {
         Schedule schedule =
                 Schedule.of(
-                        user,
+                        userId,
                         "알고리즘풀기",
                         SchedulePriority.P1,
                         LocalDateTime.now().plusDays(1),

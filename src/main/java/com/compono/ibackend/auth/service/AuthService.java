@@ -41,8 +41,7 @@ public class AuthService {
                         .orElseThrow(
                                 () ->
                                         new CustomException(
-                                                HttpStatus.BAD_REQUEST,
-                                                ErrorCode.NOT_FOUND_USER_ID));
+                                                HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
         Date now = Date.from(Instant.now());
         if (claims.getExpiration().before(now)) {
