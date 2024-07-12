@@ -45,7 +45,7 @@ import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-@DisplayName("[컨드롤러] - 사전예약")
+@DisplayName("[컨트롤러] - 사전예약")
 @WebMvcTest(PreReservationController.class)
 @AutoConfigureRestDocs
 class PreReservationControllerTest {
