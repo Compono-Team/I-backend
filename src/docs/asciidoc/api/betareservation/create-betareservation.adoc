@@ -1,0 +1,19 @@
+=== 베타테스터 신청 API
+
+==== 1. Curl Request
+
+include::{snippets}/create-betaReservation/curl-request.adoc[]
+
+==== 2. HTTP Request
+
+include::{snippets}/create-betaReservation/http-request.adoc[]
+
+==== 3. HTTP Request Body
+
+include::{snippets}/create-betaReservation/request-body.adoc[]
+include::{snippets}/create-betaReservation/request-fields.adoc[]
+
+==== 4. HTTP Response Body
+
+include::{snippets}/create-betaReservation/response-body.adoc[]
+include::{snippets}/create-betaReservation/response-fields.adoc[]
