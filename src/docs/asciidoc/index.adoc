@@ -27,6 +27,12 @@ include::api/prereservation/get-prereservation.adoc[]
 
 include::api/prereservation/get-prereservations.adoc[]
 
+= 베타테스트 신청
+
+== 베타테스트 신청
+
+include::api/betareservation/create-betareservation.adoc[]
+
 = 타임라인
 
 == 타임라인 생성
