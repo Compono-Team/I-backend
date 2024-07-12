@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/beta-test-reservation")
+@RequestMapping("/api/v1/beta-reservation")
 public class BetaReservationController {
 
     private final BetaReservationService betaReservationService;

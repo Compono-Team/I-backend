@@ -62,7 +62,7 @@ class BetaReservationControllerTest {
 
         // then
         mvc.perform(
-                        RestDocumentationRequestBuilders.post("/api/v1/beta-test-reservation")
+                        RestDocumentationRequestBuilders.post("/api/v1/beta-reservation")
                                 .with(csrf().asHeader())
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(request.toString()))
