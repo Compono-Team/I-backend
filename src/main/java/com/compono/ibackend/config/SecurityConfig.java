@@ -29,7 +29,12 @@ public class SecurityConfig {
     private final AuthService authService;
 
     private static final String[] DEFAULT_WHITELIST = {
-        "/status", "/images/**", "/error/**", "/api/v1/oauth/**", "/api/v1/users/**"
+        "/status",
+        "/images/**",
+        "/error/**",
+        "/api/v1/oauth/**",
+        "/api/v1/users/**",
+        "api/v1/beta-reservation"
     };
 
     private static final String[] DEVELOP_TEST_PATH = {"api/develop/**", "/api/develop/**"};
