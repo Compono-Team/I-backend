@@ -1,8 +1,8 @@
 spring:
   profiles:
     group:
-      local: "local, key"
-      dev: "dev, datasource-dev, key"
+      local: "local, key-local"
+      dev: "dev, datasource-dev, key-dev"
       prod: "production, datasource, key"
-      test: "test, key"
+      test: "test, key-test"
     active: local
