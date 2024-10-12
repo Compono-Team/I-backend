@@ -4,7 +4,9 @@ import com.compono.ibackend.auth.service.AuthService;
 import com.compono.ibackend.common.security.filter.JwtVerificationFilter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -34,32 +36,39 @@ public class SecurityConfig {
         "/error/**",
         "/api/v1/oauth/**",
         "/api/v1/users/**",
-        "api/v1/beta-reservation"
     };
 
     private static final String[] DEVELOP_TEST_PATH = {"api/develop/**", "/api/develop/**"};
 
+    @Value("${white-list}")
+    private final List<String> ENV_WHITELIST;
+
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
+        String[] concatWhitelist = Stream.concat(
+            Stream.of(DEFAULT_WHITELIST),
+            ENV_WHITELIST.stream()
+        ).toArray(String[]::new);
+
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(customCorsConfig())
-                .authorizeHttpRequests(
-                        request ->
-                                request.requestMatchers(DEFAULT_WHITELIST)
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
-                .headers(
-                        header ->
-                                header.frameOptions(
-                                        HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(
-                        new JwtVerificationFilter(authService),
-                        UsernamePasswordAuthenticationFilter.class);
+            .cors(customCorsConfig())
+            .authorizeHttpRequests(
+                request ->
+                    request.requestMatchers(concatWhitelist)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+            .headers(
+                header ->
+                    header.frameOptions(
+                        HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .sessionManagement(
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(
+                new JwtVerificationFilter(authService),
+                UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -75,9 +84,9 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOriginPatterns(List.of("*"));
         corsConfiguration.setAllowedOrigins(
-                List.of("http://localhost:3000", "https://www.axyz.today"));
+            List.of("http://localhost:3000", "https://www.axyz.today"));
         corsConfiguration.setAllowedMethods(
-                Arrays.asList("POST", "GET", "DELETE", "PATCH", "PUT", "OPTIONS"));
+            Arrays.asList("POST", "GET", "DELETE", "PATCH", "PUT", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.addExposedHeader("*");
