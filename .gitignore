@@ -40,7 +40,7 @@ src/main/resources/static/docs/index.html
 
 ### Git Submodule
 config/
-src/main/resources/application-key.yml
+src/main/resources/application-key*
 src/main/resources/application-datasource.yml
 src/main/resources/application-datasource-dev.yml
 
