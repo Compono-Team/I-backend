@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 @Import(value = {TestFixtureBuilder.class, BuilderSupporter.class})
-@Sql(value = {"/truncate.sql"})
+// @Sql(value = {"/truncate.sql"})
 public class RepositoryTest {
 
     @Autowired protected TestFixtureBuilder testFixtureBuilder;

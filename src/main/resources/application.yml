@@ -3,6 +3,6 @@ spring:
     group:
       local: "local, key-local"
       dev: "dev, datasource-dev, key-dev"
-      prod: "production, datasource, key"
-      test: "test, key-test"
+      prod: "production, datasource, key-dev"
+      test: "test, key-local"
     active: local

@@ -46,17 +46,17 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
 
     @Override
     public OauthLoginResponse login(
-        OauthLoginRequest param, HttpServletResponse httpServletResponse) {
+            OauthLoginRequest param, HttpServletResponse httpServletResponse) {
 
         ClientRegistration provider =
-            clientRegistrationRepository.findByRegistrationId(param.provider());
+                clientRegistrationRepository.findByRegistrationId(param.provider());
         OauthTokenDTO oauthToken = getOauthToken(param.code(), provider);
 
         KakaoUserInfo kakaoUser = getUserInfoFromKakao(param.provider(), oauthToken, provider);
         String oauthProviderUniqueKey = kakaoUser.getProviderId();
 
         Optional<User> optionalUser =
-            userRepository.findByOauthProviderUniqueKey(oauthProviderUniqueKey);
+                userRepository.findByOauthProviderUniqueKey(oauthProviderUniqueKey);
         boolean isRegistered;
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -77,28 +77,35 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
 
     private OauthTokenDTO getOauthToken(String code, ClientRegistration provider) {
         return WebClient.create()
-            .post()
-            .uri(provider.getProviderDetails().getTokenUri())
-            .headers(
-                header -> {
-                    header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                    header.setAcceptCharset(
-                        Collections.singletonList(StandardCharsets.UTF_8));
-                })
-            .bodyValue(createOauthRequestBody(code, provider))
-            .exchangeToMono(response -> {
-                // 응답 상태 코드와 헤더를 로깅
-                System.out.println("Status Code: " + response.statusCode());
-                response.headers().asHttpHeaders().forEach((name, values) -> {
-                    values.forEach(value -> System.out.println(name + ": " + value));
-                });
+                .post()
+                .uri(provider.getProviderDetails().getTokenUri())
+                .headers(
+                        header -> {
+                            header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                            header.setAcceptCharset(
+                                    Collections.singletonList(StandardCharsets.UTF_8));
+                        })
+                .bodyValue(createOauthRequestBody(code, provider))
+                .exchangeToMono(
+                        response -> {
+                            // 응답 상태 코드와 헤더를 로깅
+                            System.out.println("Status Code: " + response.statusCode());
+                            response.headers()
+                                    .asHttpHeaders()
+                                    .forEach(
+                                            (name, values) -> {
+                                                values.forEach(
+                                                        value ->
+                                                                System.out.println(
+                                                                        name + ": " + value));
+                                            });
 
-                // 응답 본문을 문자열로 받아서 로깅
-                return response.bodyToMono(String.class)
-                    .doOnNext(body -> System.out.println("Response Body: " + body))
-                    .map(body -> parseOauthTokenDTO(body)); // 본문을 파싱하여 DTO로 변환
-            })
-            .block();  // block()을 통해 동기적으로 응답을 받음
+                            // 응답 본문을 문자열로 받아서 로깅
+                            return response.bodyToMono(String.class)
+                                    .doOnNext(body -> System.out.println("Response Body: " + body))
+                                    .map(body -> parseOauthTokenDTO(body)); // 본문을 파싱하여 DTO로 변환
+                        })
+                .block(); // block()을 통해 동기적으로 응답을 받음
     }
 
     private OauthTokenDTO parseOauthTokenDTO(String body) {
@@ -112,7 +119,7 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
     }
 
     private MultiValueMap<String, String> createOauthRequestBody(
-        String code, ClientRegistration provider) {
+            String code, ClientRegistration provider) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("code", code);
         formData.add("grant_type", "authorization_code");
@@ -123,7 +130,7 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
     }
 
     private KakaoUserInfo getUserInfoFromKakao(
-        String providerName, OauthTokenDTO oauthToken, ClientRegistration provider) {
+            String providerName, OauthTokenDTO oauthToken, ClientRegistration provider) {
         if (!providerName.equals(OauthProvider.KAKAO.getValue())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_OAUTH_PROVIDER);
         }
@@ -132,25 +139,24 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
     }
 
     private Map<String, Object> getUserAttribute(
-        ClientRegistration provider, OauthTokenDTO oauthToken) {
+            ClientRegistration provider, OauthTokenDTO oauthToken) {
         return WebClient.create()
-            .get()
-            .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
-            .headers(header -> header.setBearerAuth(String.valueOf(oauthToken.accessToken())))
-            .retrieve()
-            .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-            })
-            .block();
+                .get()
+                .uri(provider.getProviderDetails().getUserInfoEndpoint().getUri())
+                .headers(header -> header.setBearerAuth(String.valueOf(oauthToken.accessToken())))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
     }
 
     private ResponseCookie createCookie(String refreshToken) {
         return ResponseCookie.from(REFRESH_TOKEN_NAME, refreshToken)
-            .maxAge(COOKIE_MAX_AGE)
-            .domain("axyz")
-            .path("/")
-            .secure(true)
-            .sameSite(SameSite.NONE.name())
-            .httpOnly(true)
-            .build();
+                .maxAge(COOKIE_MAX_AGE)
+                .domain("axyz")
+                .path("/")
+                .secure(true)
+                .sameSite(SameSite.NONE.name())
+                .httpOnly(true)
+                .build();
     }
 }

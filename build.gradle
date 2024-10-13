@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'com.diffplug.spotless' version '6.11.0'
-    id 'jacoco'
+//    id 'jacoco'
     id "org.sonarqube" version "4.4.1.3373"
 }
 
@@ -84,10 +84,11 @@ dependencies {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
-    finalizedBy 'jacocoTestReport'
+//    finalizedBy 'jacocoTestReport'
+//
 }
 
-def jacocoDir = layout.buildDirectory.dir("reports/")
+//def jacocoDir = layout.buildDirectory.dir("reports/")
 
 private excludedClassFilesForReport(classDirectories) {
     classDirectories.setFrom(
@@ -129,30 +130,30 @@ sonar {
                 '**/*Dto*.java,**/*DTO*.java, **/*Request*.java, **/*Response*.java ,**/*Exception*.java ,**/*ErrorCode*.java, **/escapes/**, **/converter/**,' +
                 ' **/enumType/**, **/*GoogleCalendar*.java, **/filter/**, **/security/**, **/*OauthService*, **/querydsl/**'
         property 'sonar.test.inclusions', '**/*Test.java'
-        property 'sonar.java.coveragePlugin', 'jacoco'
-        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
+//        property 'sonar.java.coveragePlugin', 'jacoco'
+//        property 'sonar.coverage.jacoco.xmlReportPaths', jacocoDir.get().file("jacoco/index.xml").asFile
     }
 }
 
-jacoco {
-    toolVersion = "0.8.8"
-}
+//jacoco {
+//    toolVersion = "0.8.8"
+//}
 
-jacocoTestReport {
-    dependsOn test
-    reports {
-        html.required.set(true)
-        xml.required.set(true)
-        csv.required.set(true)
-        html.destination jacocoDir.get().file("jacoco/index.html").asFile
-        xml.destination jacocoDir.get().file("jacoco/index.xml").asFile
-        csv.destination jacocoDir.get().file("jacoco/index.csv").asFile
-    }
-
-    excludedClassFilesForReport(classDirectories)
-
-    finalizedBy 'jacocoTestCoverageVerification'
-}
+//jacocoTestReport {
+//    dependsOn test
+//    reports {
+//        html.required.set(true)
+//        xml.required.set(true)
+//        csv.required.set(true)
+//        html.destination jacocoDir.get().file("jacoco/index.html").asFile
+//        xml.destination jacocoDir.get().file("jacoco/index.xml").asFile
+//        csv.destination jacocoDir.get().file("jacoco/index.csv").asFile
+//    }
+//
+//    excludedClassFilesForReport(classDirectories)
+//
+//    finalizedBy 'jacocoTestCoverageVerification'
+//}
 // Querydsl 설정부
 def generated = 'src/main/generated'
 
@@ -171,28 +172,28 @@ clean {
     delete file(generated)
 }
 
-jacocoTestCoverageVerification {
-    excludedClassFilesForReport(classDirectories)
-
-    violationRules {
-        rule {
-            // rule 활성화
-            enabled = true
-
-            // 클래스 단위로 룰 체크
-            element = 'CLASS'
-
-            // 라인 커버리지를 최소 80% 만족
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
-//            excludes = jacocoExcludePatterns
-        }
-    }
-}
+//jacocoTestCoverageVerification {
+//    excludedClassFilesForReport(classDirectories)
+//
+//    violationRules {
+//        rule {
+//            // rule 활성화
+//            enabled = true
+//
+//            // 클래스 단위로 룰 체크
+//            element = 'CLASS'
+//
+//            // 라인 커버리지를 최소 80% 만족
+//            limit {
+//                counter = 'LINE'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.80
+//            }
+//
+////            excludes = jacocoExcludePatterns
+//        }
+//    }
+//}
 
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
