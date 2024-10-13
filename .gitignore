@@ -46,3 +46,6 @@ src/main/resources/application-datasource-dev.yml
 
 ### Querydsl
 /src/main/generated
+
+### h2 database
+compono-test.*
