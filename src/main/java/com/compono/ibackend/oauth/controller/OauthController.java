@@ -3,7 +3,7 @@ package com.compono.ibackend.oauth.controller;
 import com.compono.ibackend.oauth.dto.request.OauthLoginRequest;
 import com.compono.ibackend.oauth.dto.response.OauthLoginResponse;
 import com.compono.ibackend.oauth.service.OauthService;
-import com.compono.ibackend.user.enumType.OauthProvider;
+import com.compono.ibackend.model.user.enumType.OauthProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
