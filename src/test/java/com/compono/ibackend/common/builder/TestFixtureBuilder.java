@@ -1,9 +1,7 @@
 package com.compono.ibackend.common.builder;
 
-import com.compono.ibackend.schedule.domain.Schedule;
-import com.compono.ibackend.schedule.domain.ScheduleTime;
-import com.compono.ibackend.user.domain.User;
-import java.util.List;
+import com.compono.ibackend.model.scheduleTime.domain.ScheduleTime;
+import com.compono.ibackend.model.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +14,6 @@ public class TestFixtureBuilder {
         return builderSupporter.scheduleTimeRepository().save(scheduleTime);
     }
 
-    public List<Schedule> buildSchedule(List<Schedule> schedules) {
-        return builderSupporter.scheduleRepository().saveAll(schedules);
-    }
 
     public User buildUser(User user) {
         return builderSupporter.userRepository().save(user);
