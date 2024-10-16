@@ -1,8 +1,8 @@
 package com.compono.ibackend.common.fixtures;
 
-import com.compono.ibackend.model.user.domain.User;
-import com.compono.ibackend.model.user.dto.request.UserAddRequest;
-import com.compono.ibackend.model.user.enumType.OauthProvider;
+import com.compono.ibackend.user.domain.User;
+import com.compono.ibackend.user.dto.request.UserAddRequest;
+import com.compono.ibackend.user.enumType.OauthProvider;
 import java.util.UUID;
 
 public class UserFixtures {

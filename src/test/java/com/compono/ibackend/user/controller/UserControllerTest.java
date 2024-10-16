@@ -16,10 +16,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.compono.ibackend.model.user.dto.request.UserAddRequest;
-import com.compono.ibackend.model.user.dto.response.UserAddResponse;
-import com.compono.ibackend.service.user.UserService;
-import com.compono.ibackend.web.user.UserController;
+import com.compono.ibackend.user.dto.request.UserAddRequest;
+import com.compono.ibackend.user.dto.response.UserAddResponse;
+import com.compono.ibackend.user.service.UserService;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.compono.ibackend.common.security.impl;
 
-import com.compono.ibackend.model.user.domain.User;
-import com.compono.ibackend.model.user.repository.UserRepository;
+import com.compono.ibackend.user.domain.User;
+import com.compono.ibackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,6 +1,6 @@
 package com.compono.ibackend.common.security.impl;
 
-import com.compono.ibackend.model.user.domain.User;
+import com.compono.ibackend.user.domain.User;
 import io.jsonwebtoken.Claims;
 import java.util.Collection;
 import java.util.List;

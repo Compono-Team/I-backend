@@ -1,7 +1,7 @@
 package com.compono.ibackend.oauth.domain;
 
 import com.compono.ibackend.oauth.dto.response.OauthLoginResponse;
-import com.compono.ibackend.model.user.enumType.OauthProvider;
+import com.compono.ibackend.user.enumType.OauthProvider;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 

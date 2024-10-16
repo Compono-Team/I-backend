@@ -1,7 +1,7 @@
 package com.compono.ibackend.common.fixtures;
 
-import com.compono.ibackend.model.schedule.domain.Schedule;
-import com.compono.ibackend.model.scheduleTime.domain.ScheduleTime;
+import com.compono.ibackend.schedule.domain.Schedule;
+import com.compono.ibackend.scheduleTime.domain.ScheduleTime;
 import java.time.LocalDateTime;
 
 public class ScheduleTimeFixtures {

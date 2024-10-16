@@ -9,12 +9,11 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
-import com.compono.ibackend.model.user.domain.User;
-import com.compono.ibackend.model.user.dto.request.UserAddRequest;
-import com.compono.ibackend.model.user.dto.response.UserAddResponse;
-import com.compono.ibackend.service.user.UserService;
-import com.compono.ibackend.model.user.enumType.OauthProvider;
-import com.compono.ibackend.model.user.repository.UserRepository;
+import com.compono.ibackend.user.domain.User;
+import com.compono.ibackend.user.dto.request.UserAddRequest;
+import com.compono.ibackend.user.dto.response.UserAddResponse;
+import com.compono.ibackend.user.enumType.OauthProvider;
+import com.compono.ibackend.user.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

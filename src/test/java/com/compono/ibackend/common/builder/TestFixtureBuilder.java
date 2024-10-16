@@ -1,7 +1,7 @@
 package com.compono.ibackend.common.builder;
 
-import com.compono.ibackend.model.scheduleTime.domain.ScheduleTime;
-import com.compono.ibackend.model.user.domain.User;
+import com.compono.ibackend.scheduleTime.domain.ScheduleTime;
+import com.compono.ibackend.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
