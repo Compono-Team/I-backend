@@ -1,6 +1,6 @@
 package com.compono.ibackend.schedule.dto.response;
 
-import com.compono.ibackend.schedule.domain.ScheduleTime;
+import com.compono.ibackend.scheduleTime.domain.ScheduleTime;
 import java.time.LocalDateTime;
 
 public record ScheduleTimeResponse(Long id, LocalDateTime startTime, LocalDateTime stopTime) {
