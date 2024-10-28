@@ -5,4 +5,4 @@ services:
     container_name: i-backend-dev
     image: _IMAGE_NAME_
     ports:
-      - 8080:8080
+      - "80:8080"
