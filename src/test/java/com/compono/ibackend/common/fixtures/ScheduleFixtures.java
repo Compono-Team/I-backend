@@ -17,6 +17,4 @@ public class ScheduleFixtures {
             LocalDateTime.of(2024, 04, 17, 13, 00);
     public static final LocalDateTime TODAY_PLUS_1_DATE = LocalDateTime.now().plusDays(1);
     public static final LocalDateTime TODAY_MINUS_1_DATE = LocalDateTime.now().minusDays(1);
-
-
 }

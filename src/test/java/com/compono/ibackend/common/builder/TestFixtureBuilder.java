@@ -14,7 +14,6 @@ public class TestFixtureBuilder {
         return builderSupporter.scheduleTimeRepository().save(scheduleTime);
     }
 
-
     public User buildUser(User user) {
         return builderSupporter.userRepository().save(user);
     }

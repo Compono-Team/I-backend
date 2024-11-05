@@ -1,6 +1,5 @@
 package com.compono.ibackend.schedule.domain;
 
-
 import com.compono.ibackend.constants.GoingStatus;
 import com.compono.ibackend.constants.ScheduleStatus;
 import com.compono.ibackend.location.domain.Location;
@@ -30,50 +29,52 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Schedule {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
-	private ScheduleStatus status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ScheduleStatus status;
 
-	@Enumerated(value = EnumType.STRING)
-	@Column(name = "going_status")
-	private GoingStatus goingStatus;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "going_status")
+    private GoingStatus goingStatus;
 
-	@Column(name = "summary")
-	private String summary;
-	@Column(name = "description")
-	private String description;
+    @Column(name = "summary")
+    private String summary;
 
-	@Column(name = "start_date_time")
-	private LocalDateTime startDateTime;
-	@Column(name = "end_date_time")
-	private LocalDateTime endDateTime;
+    @Column(name = "description")
+    private String description;
 
-	@Column(name = "create_date_time", updatable = false)
-	private LocalDateTime createDateTime;
-	@Column(name = "update_date_time")
-	private LocalDateTime updateDateTime;
+    @Column(name = "start_date_time")
+    private LocalDateTime startDateTime;
 
-	@Column(name = "recurrence")
-	private String recurrence;
+    @Column(name = "end_date_time")
+    private LocalDateTime endDateTime;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "location_id")
-	private Location location;
+    @Column(name = "create_date_time", updatable = false)
+    private LocalDateTime createDateTime;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tag_id")
-	private Tag tag;
+    @Column(name = "update_date_time")
+    private LocalDateTime updateDateTime;
 
-	@OneToMany
-	private List<ScheduleTime> scheduleTime;
+    @Column(name = "recurrence")
+    private String recurrence;
 
-	private boolean displayCalendar;
-	private LocalDateTime totalTime;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
-	private Integer priority;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
+
+    @OneToMany private List<ScheduleTime> scheduleTime;
+
+    private boolean displayCalendar;
+    private LocalDateTime totalTime;
+
+    private Integer priority;
 }

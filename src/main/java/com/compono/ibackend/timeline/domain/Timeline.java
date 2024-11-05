@@ -1,6 +1,5 @@
 package com.compono.ibackend.timeline.domain;
 
-
 import com.compono.ibackend.constants.GoingStatus;
 import com.compono.ibackend.location.domain.Location;
 import jakarta.persistence.Column;
@@ -24,25 +23,25 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Timeline {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-	@Column(name = "start_time")
-	private LocalDateTime startTime;
-	@Column(name = "end_time")
-	private LocalDateTime endTime;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
 
-	@Column(name = "summary")
-	private String summary;
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "location_id")
-	private Location location;
+    @Column(name = "summary")
+    private String summary;
 
-	@Enumerated(value = EnumType.STRING)
-	@Column(name = "going_status")
-	private GoingStatus goingStatus;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "going_status")
+    private GoingStatus goingStatus;
 }

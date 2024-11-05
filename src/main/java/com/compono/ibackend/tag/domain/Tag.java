@@ -12,16 +12,17 @@ import java.util.List;
 @Entity
 public class Tag {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-	@Column(name = "name")
-	private String name;
-	@Column(name = "color")
-	private String color;
+    @Column(name = "name")
+    private String name;
 
-	@OneToMany(mappedBy = "tag")
-	private List<Schedule> schedules;
+    @Column(name = "color")
+    private String color;
+
+    @OneToMany(mappedBy = "tag")
+    private List<Schedule> schedules;
 }
