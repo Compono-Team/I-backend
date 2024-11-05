@@ -1,6 +1,6 @@
 package com.compono.ibackend.common.builder;
 
-import com.compono.ibackend.schedule.repository.ScheduleTimeRepository;
+import com.compono.ibackend.scheduleTime.repository.ScheduleTimeRepository;
 import com.compono.ibackend.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
