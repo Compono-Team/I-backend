@@ -2,13 +2,15 @@ package com.compono.ibackend.oauth.service;
 
 import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
-import com.compono.ibackend.common.utils.jwt.JwtProvider;
+import com.compono.ibackend.common.security.jwt.JwtProvider;
+import com.compono.ibackend.constants.CommonConstants;
 import com.compono.ibackend.oauth.domain.KakaoUserInfo;
 import com.compono.ibackend.oauth.dto.OauthTokenDTO;
 import com.compono.ibackend.oauth.dto.request.OauthLoginRequest;
 import com.compono.ibackend.oauth.dto.response.OauthLoginResponse;
 import com.compono.ibackend.user.domain.User;
 import com.compono.ibackend.user.enumType.OauthProvider;
+import com.compono.ibackend.user.enumType.UserStatus;
 import com.compono.ibackend.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +30,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -41,10 +44,8 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-    private static final String REFRESH_TOKEN_NAME = "refresh_token";
-    private static final int COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-
     @Override
+    @Transactional
     public OauthLoginResponse login(
             OauthLoginRequest param, HttpServletResponse httpServletResponse) {
 
@@ -60,12 +61,18 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
         boolean isRegistered;
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
+
+            if (user.getUserStatus() == UserStatus.UNCERTIFIED) {
+                throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.UNVERIFIED_EMAIL);
+            }
+
             String accessToken = jwtProvider.createAccessToken(user.getEmail());
             httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, accessToken);
 
             String refreshToken = jwtProvider.createRefreshToken(user.getEmail());
             ResponseCookie cookie = createCookie(refreshToken);
             httpServletResponse.setHeader("Set-Cookie", cookie.toString());
+            user.updateRefreshToken(refreshToken);
 
             isRegistered = true;
         } else {
@@ -89,7 +96,7 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
                 .exchangeToMono(
                         response -> {
                             // 응답 상태 코드와 헤더를 로깅
-                            System.out.println("Status Code: " + response.statusCode());
+                            log.debug("Status Code: " + response.statusCode());
                             response.headers()
                                     .asHttpHeaders()
                                     .forEach(
@@ -150,8 +157,8 @@ public class KakaoOauthService implements OauthService<OauthLoginRequest> {
     }
 
     private ResponseCookie createCookie(String refreshToken) {
-        return ResponseCookie.from(REFRESH_TOKEN_NAME, refreshToken)
-                .maxAge(COOKIE_MAX_AGE)
+        return ResponseCookie.from(CommonConstants.REFRESH_TOKEN_NAME, refreshToken)
+                .maxAge(CommonConstants.COOKIE_MAX_AGE)
                 .domain("axyz")
                 .path("/")
                 .secure(true)

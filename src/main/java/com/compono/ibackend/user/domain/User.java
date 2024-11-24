@@ -42,25 +42,31 @@ public class User {
     @Column(name = "oauth_provider_unique_key")
     private String oauthProviderUniqueKey;
 
-    @Column(name = "is_authenticated", nullable = false)
-    private Boolean isAuthenticated;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "user_status", nullable = false)
     private UserStatus userStatus;
+
+    @Column(name = "refresh_token", nullable = true, length = 255)
+    private String refreshToken;
 
     private User(
             String email,
             String nickname,
             OauthProvider oauthProvider,
-            String oauthProviderUniqueKey,
-            Boolean isAuthenticated) {
+            String oauthProviderUniqueKey) {
         this.email = email;
         this.nickname = nickname;
         this.oauthProvider = oauthProvider;
         this.oauthProviderUniqueKey = oauthProviderUniqueKey;
-        this.isAuthenticated = isAuthenticated;
+        this.userStatus = UserStatus.UNCERTIFIED;
+    }
+
+    public void verifyEmail() {
         this.userStatus = UserStatus.ACTIVE;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public static User from(UserAddRequest request) {
@@ -68,7 +74,6 @@ public class User {
                 request.email(),
                 request.nickname(),
                 request.oauthProvider(),
-                request.oauthProviderUniqueKey(),
-                request.isAuthenticated());
+                request.oauthProviderUniqueKey());
     }
 }

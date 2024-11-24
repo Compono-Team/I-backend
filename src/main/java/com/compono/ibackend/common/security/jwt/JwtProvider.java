@@ -1,4 +1,4 @@
-package com.compono.ibackend.common.utils.jwt;
+package com.compono.ibackend.common.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

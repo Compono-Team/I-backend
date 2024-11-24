@@ -2,6 +2,7 @@ package com.compono.ibackend.user.service;
 
 import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
+import com.compono.ibackend.common.exception.DuplicateResourceException;
 import com.compono.ibackend.user.domain.User;
 import com.compono.ibackend.user.dto.request.UserAddRequest;
 import com.compono.ibackend.user.dto.response.UserAddResponse;
@@ -19,18 +20,31 @@ public class UserService {
 
     @Transactional
     public UserAddResponse addUser(UserAddRequest request) {
-        // TODO request validation
         User user = request.toEntity();
+        userRepository
+                .findByEmail(user.getEmail())
+                .ifPresent(
+                        u -> {
+                            throw new DuplicateResourceException(
+                                    ErrorCode.DUPLICATED_FAILED, "email");
+                        });
         userRepository.save(user);
         return UserAddResponse.from(user);
     }
 
+    @Transactional
+    public void verifyEmail(String email, String code) {
+        // TODO: user 검증 로직
+        findUserByEmail(email).verifyEmail();
+    }
+
     /**
-     * emaill로 User 찾는 함수
+     * email로 User 찾는 함수
      *
      * @param email
      * @return
      */
+    @Transactional(readOnly = true)
     public User findUserByEmail(String email) {
         return userRepository
                 .findByEmail(email)
@@ -38,5 +52,10 @@ public class UserService {
                         () ->
                                 new CustomException(
                                         HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER_EMAIL));
+    }
+
+    @Transactional(readOnly = true)
+    public void resendVerifyEmail(String email) {
+        // TODO: 실제 이메일 발송 로직
     }
 }
