@@ -2,7 +2,7 @@ package com.compono.ibackend.oauth.service;
 
 import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
-import com.compono.ibackend.common.utils.jwt.JwtProvider;
+import com.compono.ibackend.common.security.jwt.JwtProvider;
 import com.compono.ibackend.oauth.domain.GoogleUserInfo;
 import com.compono.ibackend.oauth.dto.OauthTokenDTO;
 import com.compono.ibackend.oauth.dto.request.OauthLoginRequest;

@@ -3,6 +3,7 @@ package com.compono.ibackend.common.security.filter;
 import com.compono.ibackend.auth.service.AuthService;
 import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.security.impl.UserDetailsImpl;
+import com.compono.ibackend.constants.CommonConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -21,13 +22,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtVerificationFilter extends OncePerRequestFilter {
 
-    private static final String JWT_PREFIX = "Bearer ";
     private final AuthService authService;
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String bearerToken = getAuthenticationHeaderValue(request);
-        return bearerToken == null || !bearerToken.startsWith(JWT_PREFIX);
+        return bearerToken == null || !bearerToken.startsWith(CommonConstants.JWT_PREFIX);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
 
     private Authentication createAuthentication(HttpServletRequest request) {
         String accessToken = getAuthenticationHeaderValue(request);
-        accessToken = accessToken.substring(JWT_PREFIX.length());
+        accessToken = accessToken.substring(CommonConstants.JWT_PREFIX.length());
 
         Claims claims = authService.getClaims(accessToken);
         UserDetailsImpl userDetails = new UserDetailsImpl(claims);

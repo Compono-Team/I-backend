@@ -3,7 +3,9 @@ package com.compono.ibackend.auth.service;
 import com.compono.ibackend.auth.dto.response.AuthRefreshResponse;
 import com.compono.ibackend.common.enumType.ErrorCode;
 import com.compono.ibackend.common.exception.CustomException;
-import com.compono.ibackend.common.utils.jwt.JwtProvider;
+import com.compono.ibackend.common.security.jwt.JwtProvider;
+import com.compono.ibackend.common.utils.http.HttpUtils;
+import com.compono.ibackend.constants.CommonConstants;
 import com.compono.ibackend.user.domain.User;
 import com.compono.ibackend.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -16,7 +18,9 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +28,8 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
-    private static final String REFRESH_TOKEN_NAME = "refresh_token";
-    private static final String JWT_PREFIX = "Bearer ";
 
+    @Transactional
     public AuthRefreshResponse refresh(
             HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String refreshToken = getCookieFromHttpServletRequest(httpServletRequest);
@@ -43,6 +46,10 @@ public class AuthService {
                                         new CustomException(
                                                 HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
+        if (!user.getRefreshToken().equals(refreshToken)) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_TOKEN);
+        }
+
         Date now = Date.from(Instant.now());
         if (claims.getExpiration().before(now)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.COOKIE_EXPIRATION);
@@ -50,8 +57,13 @@ public class AuthService {
 
         Long userId = user.getId();
         String newAccessTokenValue = jwtProvider.createAccessToken(user.getEmail());
-        String newAccessToken = JWT_PREFIX + newAccessTokenValue;
+        String newAccessToken = CommonConstants.JWT_PREFIX + newAccessTokenValue;
         httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, newAccessToken);
+
+        String newRefreshToken = jwtProvider.createRefreshToken(user.getEmail());
+        ResponseCookie cookie = HttpUtils.createCookie(newRefreshToken);
+        httpServletResponse.setHeader("Set-Cookie", cookie.toString());
+        user.updateRefreshToken(newRefreshToken);
 
         return AuthRefreshResponse.of(userId, email);
     }
@@ -62,18 +74,17 @@ public class AuthService {
 
     private String getCookieFromHttpServletRequest(HttpServletRequest httpServletRequest) {
         if (httpServletRequest.getCookies() == null) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NOT_EXIST_COOKIE);
+            throw new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.NO_COOKIE);
         }
 
         Cookie cookie =
                 Arrays.stream(httpServletRequest.getCookies())
-                        .filter(c -> c.getName().equals(REFRESH_TOKEN_NAME))
+                        .filter(c -> c.getName().equals(CommonConstants.REFRESH_TOKEN_NAME))
                         .findFirst()
                         .orElseThrow(
                                 () ->
                                         new CustomException(
-                                                HttpStatus.BAD_REQUEST,
-                                                ErrorCode.NOT_EXIST_COOKIE));
+                                                HttpStatus.BAD_REQUEST, ErrorCode.NO_COOKIE));
         return cookie.getValue();
     }
 }

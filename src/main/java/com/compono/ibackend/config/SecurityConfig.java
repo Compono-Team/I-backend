@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,31 +31,39 @@ public class SecurityConfig {
 
     private final AuthService authService;
 
-    private static final String[] DEFAULT_WHITELIST = {
-        "/status",
-        "/images/**",
-        "/error/**",
-        "/api/v1/oauth/**",
-        "/api/v1/users/**",
-        "/api/develop/v1/**"
+    private static final String[] DEFAULT_GET_WHITELIST = {
+        "/status", "/images/**", "/error/**", "/api/v1/oauth/**", "/api/develop/v1/**"
+    };
+
+    private static final String[] DEFAULT_POST_WHITELIST = {
+        "/api/v1/users", "/api/v1/auth/refresh",
     };
 
     private static final String[] DEVELOP_TEST_PATH = {"api/develop/**", "/api/develop/**"};
 
-    @Value("${white-list}")
-    private final List<String> ENV_WHITELIST;
+    @Value("${white-list.get}")
+    private final List<String> ENV_GET_WHITELIST;
+
+    @Value("${white-list.post}")
+    private final List<String> ENV_POST_WHITELIST;
 
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {
-        String[] concatWhitelist =
-                Stream.concat(Stream.of(DEFAULT_WHITELIST), ENV_WHITELIST.stream())
+        String[] getWhitelist =
+                Stream.concat(Stream.of(DEFAULT_GET_WHITELIST), ENV_GET_WHITELIST.stream())
+                        .toArray(String[]::new);
+
+        String[] postWhitelist =
+                Stream.concat(Stream.of(DEFAULT_POST_WHITELIST), ENV_POST_WHITELIST.stream())
                         .toArray(String[]::new);
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(customCorsConfig())
                 .authorizeHttpRequests(
                         request ->
-                                request.requestMatchers(concatWhitelist)
+                                request.requestMatchers(HttpMethod.GET, getWhitelist)
+                                        .permitAll()
+                                        .requestMatchers(HttpMethod.POST, postWhitelist)
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

@@ -11,4 +11,6 @@ spring:
         format_sql: false
         show_sql: false
 
-white-list: /docs/**
+white-list:
+  get: /docs/**
+  post: ""
