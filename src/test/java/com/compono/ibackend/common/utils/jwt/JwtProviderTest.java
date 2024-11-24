@@ -2,6 +2,7 @@ package com.compono.ibackend.common.utils.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.compono.ibackend.common.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

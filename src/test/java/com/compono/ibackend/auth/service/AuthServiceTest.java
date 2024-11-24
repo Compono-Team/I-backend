@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.compono.ibackend.auth.dto.response.AuthRefreshResponse;
 import com.compono.ibackend.common.exception.CustomException;
-import com.compono.ibackend.common.utils.jwt.JwtProvider;
+import com.compono.ibackend.common.security.jwt.JwtProvider;
 import com.compono.ibackend.user.domain.User;
 import com.compono.ibackend.user.dto.request.UserAddRequest;
 import com.compono.ibackend.user.enumType.OauthProvider;
