@@ -46,7 +46,7 @@ public class AuthService {
                                         new CustomException(
                                                 HttpStatus.BAD_REQUEST, ErrorCode.NOT_FOUND_USER));
 
-        if (!user.getRefreshToken().equals(refreshToken)) {
+        if (user.getRefreshToken() != null && !user.getRefreshToken().equals(refreshToken)) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_TOKEN);
         }
 
